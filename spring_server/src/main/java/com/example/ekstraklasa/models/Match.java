@@ -28,15 +28,16 @@ public class Match {
     private LocalDate date;
 
     public Match(Team homeTeam, Team awayTeam, int homeScore, int awayScore, int round, String place, LocalDate date) {
-        this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.round = round;
         this.place = place;
         this.date = date;
-//        this.homeTeam.addHomeMatch(this);
-//        this.awayTeam.addAwayMatch(this);
+//        homeTeam.addHomeMatch(this);
+//        awayTeam.addAwayMatch(this);
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
     }
 
 

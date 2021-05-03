@@ -56,8 +56,7 @@ public class MatchService {
         return result;
     }
 
-    public Map<String, Object> save(String object, Optional<Team> homeTeam, Optional<Team> awayTeam){
-        Map<String, Object> result = new HashMap<>();
+    public Match getFromRequest(String object, Optional<Team> homeTeam, Optional<Team> awayTeam){
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode jsonNode = mapper.readTree(object);
@@ -67,35 +66,43 @@ public class MatchService {
             String place = mapper.convertValue(jsonNode.get("place"), String.class);
             LocalDate date = LocalDate.parse(mapper.convertValue(jsonNode.get("date"), String.class));
             Match newMatch = new Match(homeTeam.get(), awayTeam.get(), homeScore, awayScore, round, place, date);
+            return newMatch;
+        } catch (Exception ex) {
+            System.out.println("ex");
+        }
+        return new Match();
+    }
+
+    public Map<String, Object> save(Match newMatch){
+        Map<String, Object> result = new HashMap<>();
+        if (!newMatch.equals(new Match())) {
             repo.save(newMatch);
             result.put("match", newMatch);
             result.put("Status", 200);
-        } catch (Exception ex) {
+        } else {
             result.put("error", "Wrong data format");
             result.put("Status", 500);
         }
         return result;
     }
 
-    public Map<String, Object> editMatch(long id, String object, Optional<Team> homeTeam, Optional<Team> awayTeam) {
+    public Map<String, Object> editMatch(long id, Match newMatch) {
         Optional<Match> match = repo.findById(id);
         Map<String, Object> result = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
         try {
             if (match.isPresent()) {
-                try {
-                    JsonNode jsonNode = mapper.readTree(object);
-                    match.get().setHomeScore(mapper.convertValue(jsonNode.get("homeScore"), Integer.class));
-                    match.get().setAwayScore(mapper.convertValue(jsonNode.get("awayScore"), Integer.class));
-                    match.get().setRound(mapper.convertValue(jsonNode.get("round"), Integer.class));
-                    match.get().setPlace(mapper.convertValue(jsonNode.get("place"), String.class));
-                    match.get().setDate(LocalDate.parse(mapper.convertValue(jsonNode.get("date"), String.class)));
-                    match.get().setHomeTeam(homeTeam.get());
-                    match.get().setAwayTeam(awayTeam.get());
+                if(!newMatch.equals(new Match())) {
+                    match.get().setHomeScore(newMatch.getHomeScore());
+                    match.get().setAwayScore(newMatch.getAwayScore());
+                    match.get().setRound(newMatch.getRound());
+                    match.get().setPlace(newMatch.getPlace());
+                    match.get().setDate(newMatch.getDate());
+                    match.get().setHomeTeam(newMatch.getHomeTeam());
+                    match.get().setAwayTeam(newMatch.getAwayTeam());
                     repo.save(match.get());
                     result.put("match", match.get());
                     result.put("Status", 200);
-                } catch (Exception ex) {
+                } else {
                     result.put("error", "Wrong data format");
                     result.put("Status", 500);
                 }
@@ -110,12 +117,11 @@ public class MatchService {
         return result;
     }
 
-    public Map<String, Object> delete(long id) {
-        Optional<Match> match = repo.findById(id);
+    public Map<String, Object> delete(Optional<Match> match) {
         Map<String, Object> result = new HashMap<>();
         try {
             if (match.isPresent()) {
-                repo.deleteById(id);
+                repo.deleteById(match.get().getId());
                 result.put("match", match.get());
                 result.put("Status", 200);
             } else {
@@ -127,6 +133,14 @@ public class MatchService {
             result.put("Status", 500);
         }
         return result;
+    }
+
+    public List<Match> getHomeMatchesByTeamId(Long id){
+        return repo.findHomeMatchesByTeamId(id);
+    }
+
+    public List<Match> getAwayMatchesByTeamId(Long id){
+        return repo.findAwayMatchesByTeamId(id);
     }
 
 }

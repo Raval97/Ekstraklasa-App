@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,11 +62,11 @@ public class TeamService {
             String name = mapper.convertValue(jsonNode.get("name"), String.class);
             int points = mapper.convertValue(jsonNode.get("points"), Integer.class);
             int goalsScores = mapper.convertValue(jsonNode.get("goalsScores"), Integer.class);
-            int goalLoses = mapper.convertValue(jsonNode.get("goalLoses"), Integer.class);
+            int goalsLoses = mapper.convertValue(jsonNode.get("goalsLoses"), Integer.class);
             int loses = mapper.convertValue(jsonNode.get("loses"), Integer.class);
             int wins = mapper.convertValue(jsonNode.get("wins"), Integer.class);
             int draws = mapper.convertValue(jsonNode.get("draws"), Integer.class);
-            Team newTeam = new Team(name, points, goalsScores, goalLoses, loses, wins, draws);
+            Team newTeam = new Team(name, points, goalsScores, goalsLoses, loses, wins, draws);
             repo.save(newTeam);
             result.put("team", newTeam);
             result.put("Status", 200);
@@ -89,7 +88,7 @@ public class TeamService {
                     team.get().setName(mapper.convertValue(jsonNode.get("name"), String.class));
                     team.get().setPoints(mapper.convertValue(jsonNode.get("points"), Integer.class));
                     team.get().setGoalsScores(mapper.convertValue(jsonNode.get("goalsScores"), Integer.class));
-                    team.get().setGoalLoses(mapper.convertValue(jsonNode.get("goalLoses"), Integer.class));
+                    team.get().setGoalsLoses(mapper.convertValue(jsonNode.get("goalsLoses"), Integer.class));
                     team.get().setLoses(mapper.convertValue(jsonNode.get("loses"), Integer.class));
                     team.get().setWins(mapper.convertValue(jsonNode.get("wins"), Integer.class));
                     team.get().setDraws(mapper.convertValue(jsonNode.get("draws"), Integer.class));
@@ -142,4 +141,49 @@ public class TeamService {
         return Optional.empty();
     }
 
+    public void updateStatisticsOfTeam(Team team, List<Match> homeMatches, List<Match> awayMatches) {
+        final int[] points = {0};
+        final int[] goalsScore = {0};
+        final int[] goalsLoses = {0};
+        final int[] wins = {0};
+        final int[] draws = {0};
+        final int[] loses = {0};
+        homeMatches.forEach(match -> {
+            if (match != null) {
+                if ((match.getHomeScore() - match.getAwayScore()) > 0) {
+                    points[0] += 1;
+                    wins[0] += 3;
+                } else if ((match.getHomeScore() - match.getAwayScore()) == 0) {
+                    points[0] += 1;
+                    draws[0] += 3;
+
+                } else
+                    loses[0] += 1;
+                goalsScore[0] += match.getHomeScore();
+                goalsLoses[0] += match.getAwayScore();
+            }
+        });
+        awayMatches.forEach(match -> {
+            if (match != null) {
+                if ((match.getHomeScore() - match.getAwayScore()) < 0) {
+                    points[0] += 1;
+                    wins[0] += 3;
+                } else if ((match.getHomeScore() - match.getAwayScore()) == 0) {
+                    points[0] += 1;
+                    draws[0] += 3;
+
+                } else
+                    loses[0] += 1;
+                goalsLoses[0] += match.getHomeScore();
+                goalsScore[0] += match.getAwayScore();
+            }
+        });
+        team.setPoints(points[0]);
+        team.setDraws(draws[0]);
+        team.setLoses(loses[0]);
+        team.setWins(wins[0]);
+        team.setGoalsLoses(goalsLoses[0]);
+        team.setGoalsScores(goalsScore[0]);
+        repo.save(team);
+    }
 }

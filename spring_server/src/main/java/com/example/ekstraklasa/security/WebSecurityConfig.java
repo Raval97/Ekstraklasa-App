@@ -50,6 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/dashboard/**").hasRole("ADMIN")
+                .antMatchers("/users/**").hasRole("ADMIN")
                 .and().formLogin().permitAll()
                 .successHandler(authSuccessHandler()).failureHandler(authFailureHandler())
                 .and().logout().permitAll().logoutSuccessUrl("/dashboard/teams")
