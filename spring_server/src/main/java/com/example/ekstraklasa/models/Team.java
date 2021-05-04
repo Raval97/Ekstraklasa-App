@@ -1,15 +1,21 @@
 package com.example.ekstraklasa.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name="team")
+@Table(name = "team")
 public class Team {
 
     @Id
@@ -28,6 +34,9 @@ public class Team {
     @JsonBackReference
     @OneToMany(mappedBy = "awayTeam", cascade = CascadeType.ALL)
     private Set<Match> awayMatches = new HashSet<>();
+    @JsonBackReference
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private Set<FavouriteTeam> favouriteTeams = new HashSet<>();
 
     public Team(String name, int points, int goalsScores, int goalsLoses, int loses, int wins, int draws) {
         this.name = name;
@@ -47,5 +56,31 @@ public class Team {
         awayMatches.add(match);
     }
 
-    public Team() {}
+    public Team() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Team)) return false;
+        Team team = (Team) o;
+        return getPoints() == team.getPoints() && getGoalsScores() == team.getGoalsScores() &&
+                getGoalsLoses() == team.getGoalsLoses() && getLoses() == team.getLoses() &&
+                getWins() == team.getWins() && getDraws() == team.getDraws() &&
+                Objects.equals(getId(), team.getId()) && Objects.equals(getName(), team.getName()) &&
+                Objects.equals(getHomeMatches(), team.getHomeMatches()) && Objects.equals(getAwayMatches(),
+                team.getAwayMatches()) && Objects.equals(getFavouriteTeams(), team.getFavouriteTeams());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getPoints(), getGoalsScores(),
+                getGoalsLoses(), getLoses(), getWins(), getDraws());
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
 }

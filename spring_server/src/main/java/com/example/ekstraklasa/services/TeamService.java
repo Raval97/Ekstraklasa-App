@@ -1,6 +1,5 @@
 package com.example.ekstraklasa.services;
 
-import com.example.ekstraklasa.models.Match;
 import com.example.ekstraklasa.models.Team;
 import com.example.ekstraklasa.repositories.TeamRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TeamService {
@@ -34,6 +30,36 @@ public class TeamService {
             result.put("Status", 500);
         }
         return result;
+    }
+
+    public Map<String, Object> getAllFavouriteByUserId(Long id) {
+        List<Team> teams =  repo.findFavouriteTeamByUserId(id);
+        Map<String, Object> result = new HashMap<>();
+        try {
+            result.put("teams", teams);
+            result.put("Status", 200);
+        } catch (Exception ex) {
+            result.put("Error", ex.getMessage());
+            result.put("Status", 500);
+        }
+        return result;
+    }
+
+    public Optional<List<Team>> getAllByName(String object) {
+        Optional<List<Team>> teams;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = mapper.readTree(object);
+            List<String> names = mapper.convertValue(jsonNode.get("favouriteTeams"), List.class);
+            teams = Optional.of(new ArrayList<>());
+            names.forEach(name -> {
+                teams.get().add(repo.findByName(name));
+            });
+            return teams;
+        } catch (Exception ex) {
+            System.out.println("error");
+        }
+        return Optional.empty();
     }
 
     public Map<String, Object> get(long id) {
@@ -141,37 +167,35 @@ public class TeamService {
         return Optional.empty();
     }
 
-    public void updateStatisticsOfTeam(Team team, List<Match> homeMatches, List<Match> awayMatches) {
+    public void updateStatisticsOfTeam(Team team) {
         final int[] points = {0};
         final int[] goalsScore = {0};
         final int[] goalsLoses = {0};
         final int[] wins = {0};
         final int[] draws = {0};
         final int[] loses = {0};
-        homeMatches.forEach(match -> {
+        team.getHomeMatches().forEach(match -> {
             if (match != null) {
                 if ((match.getHomeScore() - match.getAwayScore()) > 0) {
-                    points[0] += 1;
-                    wins[0] += 3;
+                    points[0] += 3;
+                    wins[0] += 1;
                 } else if ((match.getHomeScore() - match.getAwayScore()) == 0) {
                     points[0] += 1;
-                    draws[0] += 3;
-
+                    draws[0] += 1;
                 } else
                     loses[0] += 1;
                 goalsScore[0] += match.getHomeScore();
                 goalsLoses[0] += match.getAwayScore();
             }
         });
-        awayMatches.forEach(match -> {
+        team.getAwayMatches().forEach(match -> {
             if (match != null) {
                 if ((match.getHomeScore() - match.getAwayScore()) < 0) {
-                    points[0] += 1;
-                    wins[0] += 3;
+                    points[0] += 3;
+                    wins[0] += 1;
                 } else if ((match.getHomeScore() - match.getAwayScore()) == 0) {
                     points[0] += 1;
-                    draws[0] += 3;
-
+                    draws[0] += 1;
                 } else
                     loses[0] += 1;
                 goalsLoses[0] += match.getHomeScore();

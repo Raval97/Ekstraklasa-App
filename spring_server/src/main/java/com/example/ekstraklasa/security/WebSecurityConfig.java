@@ -1,11 +1,9 @@
 package com.example.ekstraklasa.security;
 
-import com.example.ekstraklasa.models.Match;
-import com.example.ekstraklasa.models.Team;
+import com.example.ekstraklasa.models.*;
+import com.example.ekstraklasa.repositories.FavouriteTeamRepository;
 import com.example.ekstraklasa.repositories.MatchRepository;
 import com.example.ekstraklasa.repositories.TeamRepository;
-import com.example.ekstraklasa.services.MatchService;
-import com.example.ekstraklasa.services.TeamService;
 import com.example.ekstraklasa.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -17,7 +15,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -29,12 +29,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService userDetailsService;
     private TeamRepository teamRepository;
+    private FavouriteTeamRepository favouriteTeamRepository;
     private MatchRepository matchRepository;
 
     @Autowired
-    public WebSecurityConfig(UserService userDetailsService, TeamRepository teamRepository, MatchRepository matchRepository) {
+    public WebSecurityConfig(UserService userDetailsService, TeamRepository teamRepository,
+                             FavouriteTeamRepository favouriteTeamRepository, MatchRepository matchRepository) {
         this.userDetailsService = userDetailsService;
         this.teamRepository = teamRepository;
+        this.favouriteTeamRepository = favouriteTeamRepository;
         this.matchRepository = matchRepository;
     }
 
@@ -46,7 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/dashboard/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/dashboard/**").permitAll()
+                .antMatchers("/favourite_team/**").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/dashboard/**").hasRole("ADMIN")
@@ -68,14 +72,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new UrlAuthenticationFailureHandler();
     }
 
-    @SuppressWarnings("deprecation")
+
     @Bean
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    public static PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void get() {
+        Users user1 = new Users("user", passwordEncoder().encode("user"));
+        Users user2 = new Users("user2", passwordEncoder().encode("user2"));
+        Users user3 = new Users("user3", passwordEncoder().encode("user3"));
+        Users admin = new Users("admin", passwordEncoder().encode("admin"), Role.ADMIN);
+        userDetailsService.save(user1);
+        userDetailsService.save(user2);
+        userDetailsService.save(user3);
+        userDetailsService.save(admin);
         Team team1 = new Team("Cracovia Kraków", 3, 2, 1, 0, 1, 0);
         Team team2 = new Team("Górnik Zabrze", 0, 1, 2, 1, 0, 0);
         Team team3 = new Team("Jagielonia Białystok", 1, 2, 2, 0, 0, 1);
@@ -125,7 +137,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         matchRepository.save(match6);
         matchRepository.save(match7);
         matchRepository.save(match8);
-
+        FavouriteTeam ft1 = new FavouriteTeam(team1, user1);
+        FavouriteTeam ft2 = new FavouriteTeam(team2, user1);
+        favouriteTeamRepository.save(ft1);
+        favouriteTeamRepository.save(ft2);
     }
 }
 

@@ -1,6 +1,5 @@
 package com.example.ekstraklasa.services;
 
-import com.example.ekstraklasa.models.Match;
 import com.example.ekstraklasa.models.Role;
 import com.example.ekstraklasa.models.Users;
 import com.example.ekstraklasa.repositories.UserRepository;
@@ -61,10 +60,6 @@ public class UserService implements UserDetailsService {
         return result;
     }
 
-    public Users get(long id) {
-        return repo.findByIdUser(id);
-    }
-
     public void save(Users user) {
         repo.save(user);
     }
@@ -73,24 +68,13 @@ public class UserService implements UserDetailsService {
         repo.deleteById(id);
     }
 
+    public Users findUserByUsername(String s) {
+        return repo.findByUsername(s);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return repo.findByUsername(s);
     }
 
-    public Users findUserByUsername(String s) {
-        return repo.findByUsername(s);
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void get() {
-        Users user1 = new Users("user", "user");
-        Users user2 = new Users("user2", "user2");
-        Users user3 = new Users("user3", "user3");
-        Users admin = new Users("admin", "admin", Role.ADMIN);
-        repo.save(user1);
-        repo.save(user2);
-        repo.save(user3);
-        repo.save(admin);
-    }
 }

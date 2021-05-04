@@ -135,12 +135,4 @@ public class MatchService {
         return result;
     }
 
-    public List<Match> getHomeMatchesByTeamId(Long id){
-        return repo.findHomeMatchesByTeamId(id);
-    }
-
-    public List<Match> getAwayMatchesByTeamId(Long id){
-        return repo.findAwayMatchesByTeamId(id);
-    }
-
 }

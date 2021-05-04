@@ -1,17 +1,25 @@
 package com.example.ekstraklasa.models;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.service.spi.InjectService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class Users implements UserDetails {
 
     @Id
@@ -20,6 +28,10 @@ public class Users implements UserDetails {
     private String username;
     private String password;
     private Role role;
+//    @JsonDeserialize(using = FavouriteTeamDeserializer.class)
+    @JsonBackReference
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private Set<FavouriteTeam> favouriteTeams = new HashSet<>();
 
     public Users(String username, String password) {
         this.username = username;
@@ -36,14 +48,13 @@ public class Users implements UserDetails {
     public Users() {
     }
 
-//    public void setPassword(String password) {
-//        this.password = password;
-////        this.password = passwordEncoder().encode(password);
-//    }
+    public void setPassword(String password) {
+        this.password = passwordEncoder().encode(password);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_"+role.toString()));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.toString()));
     }
 
     @Override
@@ -76,10 +87,35 @@ public class Users implements UserDetails {
         return true;
     }
 
-//    @InjectService
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @InjectService
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 
+    public static String getUserName() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        String userName = null;
+        if (authentication != null) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            userName = userDetails.getUsername();
+        }
+        return userName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Users)) return false;
+        Users users = (Users) o;
+        return Objects.equals(getId(), users.getId()) && Objects.equals(getUsername(),
+                users.getUsername()) && Objects.equals(getPassword(), users.getPassword())
+                && getRole() == users.getRole() && Objects.equals(getFavouriteTeams(), users.getFavouriteTeams());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUsername(), getPassword(), getRole());
+    }
 }
