@@ -137,8 +137,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         matchRepository.save(match6);
         matchRepository.save(match7);
         matchRepository.save(match8);
-        FavouriteTeam ft1 = new FavouriteTeam(team1, user1);
-        FavouriteTeam ft2 = new FavouriteTeam(team2, user1);
+        FavouriteTeam ft1 = new FavouriteTeam(team1, admin);
+        FavouriteTeam ft2 = new FavouriteTeam(team2, admin);
         favouriteTeamRepository.save(ft1);
         favouriteTeamRepository.save(ft2);
     }

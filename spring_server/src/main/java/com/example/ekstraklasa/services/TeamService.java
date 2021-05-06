@@ -34,9 +34,11 @@ public class TeamService {
 
     public Map<String, Object> getAllFavouriteByUserId(Long id) {
         List<Team> teams =  repo.findFavouriteTeamByUserId(id);
+        List<String> teamsNames = new ArrayList<>();
+        teams.forEach(team -> teamsNames.add(team.getName()));
         Map<String, Object> result = new HashMap<>();
         try {
-            result.put("teams", teams);
+            result.put("teams", teamsNames);
             result.put("Status", 200);
         } catch (Exception ex) {
             result.put("Error", ex.getMessage());

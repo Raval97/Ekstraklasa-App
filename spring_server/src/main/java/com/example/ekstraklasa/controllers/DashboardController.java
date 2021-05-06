@@ -1,8 +1,5 @@
 package com.example.ekstraklasa.controllers;
 
-import com.example.ekstraklasa.models.Match;
-import com.example.ekstraklasa.models.Team;
-import com.example.ekstraklasa.models.Users;
 import com.example.ekstraklasa.services.FavouriteTeamService;
 import com.example.ekstraklasa.services.MatchService;
 import com.example.ekstraklasa.services.TeamService;
@@ -13,9 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController

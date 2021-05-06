@@ -2,8 +2,6 @@ package com.example.ekstraklasa.controllers;
 
 import com.example.ekstraklasa.models.Match;
 import com.example.ekstraklasa.models.Team;
-import com.example.ekstraklasa.models.Users;
-import com.example.ekstraklasa.services.FavouriteTeamService;
 import com.example.ekstraklasa.services.MatchService;
 import com.example.ekstraklasa.services.TeamService;
 import com.example.ekstraklasa.services.UserService;
