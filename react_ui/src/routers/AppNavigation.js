@@ -6,6 +6,7 @@ import Menu from "../components/Menu";
 import EkstraklasaPage from "../containers/EkstraklasaPage";
 import AdministrationMatches from "../containers/AdministrationMatches";
 import AdministrationUsers from "../containers/AdministrationUsers";
+import SignUpPage from "../containers/SignUpPage";
 
 class AppNavigation extends Component {
 
@@ -14,8 +15,16 @@ class AppNavigation extends Component {
             <Router>
                 <Route path="/login" exact render={(props) => <LoginPage
                     user={this.props.user}
-                    failedAuthorization={this.props.failedAuthorization}
+                    failedOperation={this.props.failedOperation}
+                    successRegister={this.props.successRegister}
                     successLogout={this.props.successLogout}
+                    authorizationFunctions={this.props.authorizationFunctions}
+                />}/>
+                <Route path="/sign_up" exact render={(props) => <SignUpPage
+                    user={this.props.user}
+                    teams={this.props.teams}
+                    successRegister={this.props.successRegister}
+                    failedOperation={this.props.failedOperation}
                     authorizationFunctions={this.props.authorizationFunctions}
                 />}/>
                 <Route path="/ekstraklasa"  render={(props) => (

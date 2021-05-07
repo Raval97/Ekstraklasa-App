@@ -1,5 +1,8 @@
 package com.example.ekstraklasa.controllers;
 
+import com.example.ekstraklasa.models.FavouriteTeam;
+import com.example.ekstraklasa.models.Team;
+import com.example.ekstraklasa.models.Users;
 import com.example.ekstraklasa.services.FavouriteTeamService;
 import com.example.ekstraklasa.services.MatchService;
 import com.example.ekstraklasa.services.TeamService;
@@ -10,7 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -28,6 +34,24 @@ public class DashboardController {
         this.teamService = teamService;
         this.favouriteTeamService = favouriteTeamService;
         this.matchService = matchService;
+    }
+
+    @RequestMapping(value = "/signup", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> registerNewUser(@RequestBody String object) {
+        Optional<List<Team>> favouriteTeams = teamService.readFromRequest(object);
+        Optional<Users> newUser = userService.register(object, favouriteTeams);
+        Map<String, Object> response = new HashMap<>();
+        if(newUser.isPresent() && favouriteTeams.isPresent()){
+            favouriteTeams.get().forEach(ft -> favouriteTeamService.save(new FavouriteTeam(ft, newUser.get())));
+            response.put("team", newUser.get());
+            response.put("favouriteTeams", favouriteTeams.get());
+            response.put("Status", 200);
+        } else {
+            response.put("error", "Wrong data format");
+            response.put("Status", 500);
+        }
+        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        return new ResponseEntity<>(response, status);
     }
 
     @RequestMapping(value = "/dashboard/teams", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

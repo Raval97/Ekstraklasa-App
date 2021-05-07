@@ -1,6 +1,8 @@
 package com.example.ekstraklasa.services;
 
+import com.example.ekstraklasa.models.FavouriteTeam;
 import com.example.ekstraklasa.models.Team;
+import com.example.ekstraklasa.models.Users;
 import com.example.ekstraklasa.repositories.TeamRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -33,7 +36,7 @@ public class TeamService {
     }
 
     public Map<String, Object> getAllFavouriteByUserId(Long id) {
-        List<Team> teams =  repo.findFavouriteTeamByUserId(id);
+        List<Team> teams = repo.findFavouriteTeamByUserId(id);
         List<String> teamsNames = new ArrayList<>();
         teams.forEach(team -> teamsNames.add(team.getName()));
         Map<String, Object> result = new HashMap<>();
@@ -211,5 +214,19 @@ public class TeamService {
         team.setGoalsLoses(goalsLoses[0]);
         team.setGoalsScores(goalsScore[0]);
         repo.save(team);
+    }
+
+    public Optional<List<Team>> readFromRequest(String object) {
+        List<Team> allTeams = repo.findAll();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = mapper.readTree(object);
+            List<Long> favouriteTeamsId = mapper.convertValue(jsonNode.get("favouriteTeams"), List.class);
+            List<Team> favouriteTeams = allTeams.stream().filter(team -> favouriteTeamsId.contains(team.getId().intValue())).collect(Collectors.toList());
+            return Optional.of(favouriteTeams);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return Optional.empty();
     }
 }

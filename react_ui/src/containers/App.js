@@ -9,7 +9,8 @@ class App extends Component {
         this.state = {
             user: null,
             successLogout: false,
-            failedAuthorization: false,
+            failedOperation: false,
+            successRegister: false,
             teams: [],
             matches: [],
         };
@@ -78,11 +79,30 @@ class App extends Component {
                 role: response.data.role_user
             }
             this.setState({user: loggedUser})
-            this.setState({failedAuthorization: false})
+            this.setState({failedOperation: false})
             this.setState({successLogout: false})
+            this.setState({successRegister: false})
             this.readFavouriteTeams()
         }, (error) => {
-            this.setState({failedAuthorization: true})
+            this.setState({failedOperation: true})
+            this.setState({successLogout: false})
+            this.setState({successRegister: false})
+        })
+    }
+
+    addNewUser(object) {
+        console.log(object)
+        let targetUrl = 'http://localhost:8080/Ekstraklasa/signup'
+        axios.post(targetUrl, {
+            username: object.username,
+            password: object.password,
+            favouriteTeams: object.favouriteTeams
+        }).then((response) => {
+            this.setState({successRegister: true})
+            this.setState({failedOperation: false})
+            this.setState({successLogout: false})
+        }, (error) => {
+            this.setState({failedOperation: true})
             this.setState({successLogout: false})
         })
     }
@@ -96,14 +116,16 @@ class App extends Component {
         return (
             <AppNavigation
                 user={this.state.user}
-                failedAuthorization={this.state.failedAuthorization}
+                failedOperation={this.state.failedOperation}
+                successRegister={this.state.successRegister}
                 successLogout={this.state.successLogout}
                 teams={this.state.teams}
                 matches={this.state.matches}
                 favouriteTeams={this.state.favouriteTeams}
                 authorizationFunctions={{
                     logIn: this.logIn.bind(this),
-                    logOut: this.logOut.bind(this)
+                    logOut: this.logOut.bind(this),
+                    addNewUser: this.addNewUser.bind(this)
                 }}
                 callbackFunctions={{
                     readTeams: this.readTeams.bind(this),

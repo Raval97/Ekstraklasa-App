@@ -35,13 +35,13 @@ public class Users implements UserDetails {
 
     public Users(String username, String password) {
         this.username = username;
-        this.password = password;
+        this.password =  passwordEncoder().encode(password);
         this.role = Role.USER;
     }
 
     public Users(String username, String password, Role role) {
         this.username = username;
-        this.password = password;
+        this.password = passwordEncoder().encode(password);
         this.role = role;
     }
 

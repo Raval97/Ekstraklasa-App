@@ -19,6 +19,10 @@ public class FavouriteTeamService {
         this.repo = favouriteTeamRepository;
     }
 
+    public void save(FavouriteTeam ft){
+        repo.save(ft);
+    }
+
     public Map<String, Object> saveAllByUserId(Optional<List<Team>> teams, Users user) {
         Map<String, Object> result = new HashMap<>();
         List<String> names = new ArrayList<>();

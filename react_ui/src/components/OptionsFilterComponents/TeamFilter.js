@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 class TeamFilter extends Component {
 
     render() {
-        console.log(this.props.onlyFavoritesTeams)
         let optionsTeams, inputTeams
         let optionTeamsTemp = (this.props.onlyFavoritesTeams === false) ? this.props.teams :
             this.props.teams.filter(team => this.props.favouriteTeams.includes(team.name))

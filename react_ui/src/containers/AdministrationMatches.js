@@ -84,6 +84,7 @@ class AdministrationMatches extends Component {
         })
             .then((result) => {
                 this.props.callbackFunctions.readMatches()
+                this.props.callbackFunctions.readTeams()
                 return true
             }, (error) => {
                 console.log(error);
@@ -103,6 +104,7 @@ class AdministrationMatches extends Component {
             .then((result) => {
                     console.log(result)
                     this.props.callbackFunctions.readMatches()
+                    this.props.callbackFunctions.readTeams()
                 },
                 (error) => {
                     console.error(error)

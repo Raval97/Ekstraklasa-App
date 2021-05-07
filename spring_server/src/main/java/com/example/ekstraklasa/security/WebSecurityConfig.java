@@ -51,6 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/dashboard/**").permitAll()
                 .antMatchers("/favourite_team/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/signup/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/dashboard/**").hasRole("ADMIN")
@@ -80,10 +81,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @EventListener(ApplicationReadyEvent.class)
     public void get() {
-        Users user1 = new Users("user", passwordEncoder().encode("user"));
-        Users user2 = new Users("user2", passwordEncoder().encode("user2"));
-        Users user3 = new Users("user3", passwordEncoder().encode("user3"));
-        Users admin = new Users("admin", passwordEncoder().encode("admin"), Role.ADMIN);
+        Users user1 = new Users("user", "user");
+        Users user2 = new Users("user2", "user2");
+        Users user3 = new Users("user3", "user3");
+        Users admin = new Users("admin", "admin", Role.ADMIN);
         userDetailsService.save(user1);
         userDetailsService.save(user2);
         userDetailsService.save(user3);

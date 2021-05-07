@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {Redirect} from 'react-router'
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar'
-import LogOutButton from "./LogOutButton";
 
 class Menu extends Component {
     constructor() {
@@ -26,21 +25,25 @@ class Menu extends Component {
             loginPage: !this.state.loginPage
         })
     }
+
     onChangeRegisterPage() {
         this.setState({
             registerPage: !this.state.registerPage
         })
     }
+
     onChangeAdminMatchesPage() {
         this.setState({
             adminMatchesPage: !this.state.adminMatchesPage
         })
     }
+
     onChangeAdminUsersPage() {
         this.setState({
             adminUsersPage: !this.state.adminUsersPage
         })
     }
+
     onChangeEkstraklasaPage() {
         this.setState({
             ekstraklasaPage: !this.state.ekstraklasaPage
@@ -52,10 +55,10 @@ class Menu extends Component {
             this.onChangeLoginPage()
             return <Redirect to='/login'/>
         }
-        // if (this.state.registerPage) {
-        //     this.onChangeRegisterPage()
-        //     return <Redirect to='/register'/>
-        // }
+        if (this.state.registerPage) {
+            this.onChangeRegisterPage()
+            return <Redirect to='/sign_up'/>
+        }
         if (this.state.adminMatchesPage) {
             this.onChangeAdminMatchesPage()
             return <Redirect to='/ekstraklasa/adminMatches'/>
@@ -69,25 +72,42 @@ class Menu extends Component {
             return <Redirect to='/ekstraklasa'/>
         }
 
+        let logoutButton = (
+            <div>
+                <div className="form-group row">
+                    <div className="pl-3">
+                        <button type="submit" className="btn btn-primary"
+                                onClick={() => this.props.authorizationFunctions.logOut()}>Log Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
         let topMenu
         if (this.props.user === null) {
-            return <Redirect to='/login'/>;
+            topMenu = (
+                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+                    <div className="xdd">
+                        <Button onClick={this.onChangeLoginPage}>Sign In</Button>{' '}
+                        <Button onClick={this.onChangeRegisterPage}>Sign Up</Button>{' '}
+                    </div>
+                </Navbar>
+            )
         } else if (this.props.user.role === "ROLE_USER") {
             topMenu = (
                 <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                    <LogOutButton callbackFunctions={this.props.authorizationFunctions}/>
+                    {logoutButton}
                 </Navbar>
-
             )
         } else {
             topMenu = (
                 <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                <div className = "xdd">
-                    <LogOutButton callbackFunctions={this.props.authorizationFunctions}/>
-                    <Button onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
-                    <Button onClick={this.onChangeAdminMatchesPage}>Administration Matches</Button>{' '}
-                    <Button onClick={this.onChangeAdminUsersPage}>Administration Users</Button>{' '}
-                </div>
+                    <div className="xdd">
+                        {logoutButton}
+                        <Button onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
+                        <Button onClick={this.onChangeAdminMatchesPage}>Administration Matches</Button>{' '}
+                        <Button onClick={this.onChangeAdminUsersPage}>Administration Users</Button>{' '}
+                    </div>
                 </Navbar>
             )
         }

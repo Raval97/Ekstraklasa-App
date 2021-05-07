@@ -28,27 +28,32 @@ class LoginPage extends Component {
     render() {
         if (this.props.user !== null)
             return <Redirect to='/ekstraklasa/home'/>;
-        let failedAuthorized
-        if (this.props.failedAuthorization)
-            failedAuthorized = (
+        let info
+        if (this.props.failedOperation)
+            info = (
                 <div id="wrongPass" className="p-1 mb-3 text-center"
                      style={{backgroundColor: "#a1072c", color: "#fff"}}>
                     Invalid username or password.
                 </div>
             )
-        let successLogOut
         if (this.props.successLogout)
-            successLogOut = (
+            info = (
                 <div id="logOut_info" className="p-1 mb-3 text-center"
                      style={{backgroundColor: "#9db8cb", color: "#fff"}}>
                     You have been logged out.
                 </div>
             )
+        if (this.props.successRegister)
+            info = (
+                <div id="logOut_info" className="p-1 mb-3 text-center"
+                     style={{backgroundColor: "#5ea331", color: "#fff"}}>
+                    New Account is successful created, now you can log in.
+                </div>
+            )
         return (
             <div className="mx-auto w-75 mt-3 p-3" style={{backgroundColor: "#49a1d5"}}>
                 <div className="mx-auto w-50 p-3 mb-10" style={{backgroundColor: "#33aaff"}}>
-                    {failedAuthorized}
-                    {successLogOut}
+                    {info}
                     <h2 className="form-signin-heading text-center">Please sign in</h2>
                     <div className="form-group">
                         <label htmlFor="username" className="sr-only">Username</label>

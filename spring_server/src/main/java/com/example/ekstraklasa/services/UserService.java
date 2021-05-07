@@ -1,8 +1,11 @@
 package com.example.ekstraklasa.services;
 
 import com.example.ekstraklasa.models.Role;
+import com.example.ekstraklasa.models.Team;
 import com.example.ekstraklasa.models.Users;
 import com.example.ekstraklasa.repositories.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -77,4 +80,18 @@ public class UserService implements UserDetailsService {
         return repo.findByUsername(s);
     }
 
+    public Optional<Users> register(String object, Optional<List<Team>> favouriteTeams) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = mapper.readTree(object);
+            String username = mapper.convertValue(jsonNode.get("username"), String.class);
+            String password = mapper.convertValue(jsonNode.get("password"), String.class);
+            Users newUser = new Users(username, password);
+            repo.save(newUser);
+            return Optional.of(newUser);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return Optional.empty();
+    }
 }
