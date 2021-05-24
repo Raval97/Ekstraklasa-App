@@ -21,7 +21,6 @@ class AdministrationUsers extends Component {
         fetch("http://localhost:8080/Ekstraklasa/users", {method: 'GET', headers: headers,})
             .then(res => res.json())
             .then((result) => {
-                    console.log(result)
                     this.setState({
                         users: result.users
                     });

@@ -38,19 +38,29 @@ public class DashboardController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> registerNewUser(@RequestBody String object) {
-        Optional<List<Team>> favouriteTeams = teamService.readFromRequest(object);
-        Optional<Users> newUser = userService.register(object, favouriteTeams);
+        Optional<List<Team>> favouriteTeams = teamService.readAllFromRequest(object);
+        Optional<Users> newUser = userService.register(object);
         Map<String, Object> response = new HashMap<>();
+        HttpStatus status;
         if(newUser.isPresent() && favouriteTeams.isPresent()){
-            favouriteTeams.get().forEach(ft -> favouriteTeamService.save(new FavouriteTeam(ft, newUser.get())));
-            response.put("team", newUser.get());
-            response.put("favouriteTeams", favouriteTeams.get());
-            response.put("Status", 200);
+            if(userService.isUsernameUnique(newUser.get().getUsername())) {
+                userService.save(newUser.get());
+                favouriteTeams.get().forEach(ft -> favouriteTeamService.save(new FavouriteTeam(ft, newUser.get())));
+                response.put("user", newUser.get());
+                response.put("favouriteTeams", favouriteTeams.get());
+                response.put("Status", 200);
+                status = HttpStatus.OK;
+            }
+            else {
+                response.put("error", "Username is not unique");
+                response.put("Status", 400);
+                status = HttpStatus.BAD_REQUEST;
+            }
         } else {
             response.put("error", "Wrong data format");
             response.put("Status", 500);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
@@ -61,13 +71,13 @@ public class DashboardController {
         return new ResponseEntity<>(response, status);
     }
 
-    @RequestMapping(value = "/dashboard/teams/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getTeam(@PathVariable int id) {
-        Map<String,Object> response = teamService.get(id);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
-        return new ResponseEntity<>(response, status);
-    }
+//    @RequestMapping(value = "/dashboard/teams/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> getTeam(@PathVariable int id) {
+//        Map<String,Object> response = teamService.get(id);
+//        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
+//                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+//        return new ResponseEntity<>(response, status);
+//    }
 
     @RequestMapping(value = "/dashboard/matches", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMatches() {

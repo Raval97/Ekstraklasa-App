@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import {Redirect} from 'react-router'
 import Button from 'react-bootstrap/Button';
-import Navbar from 'react-bootstrap/Navbar'
 
 class Menu extends Component {
     constructor() {
@@ -11,13 +10,15 @@ class Menu extends Component {
             registerPage: false,
             adminMatchesPage: false,
             adminUsersPage: false,
-            ekstraklasaPage: false
+            ekstraklasaPage: false,
+            userAccountPage: false
         };
         this.onChangeLoginPage = this.onChangeLoginPage.bind(this);
         this.onChangeRegisterPage = this.onChangeRegisterPage.bind(this);
         this.onChangeAdminMatchesPage = this.onChangeAdminMatchesPage.bind(this);
         this.onChangeAdminUsersPage = this.onChangeAdminUsersPage.bind(this);
         this.onChangeEkstraklasaPage = this.onChangeEkstraklasaPage.bind(this);
+        this.onChangeUserAccountPage = this.onChangeUserAccountPage.bind(this);
     }
 
     onChangeLoginPage() {
@@ -50,6 +51,12 @@ class Menu extends Component {
         })
     }
 
+    onChangeUserAccountPage() {
+        this.setState({
+            userAccountPage: !this.state.userAccountPage
+        })
+    }
+
     render() {
         if (this.state.loginPage) {
             this.onChangeLoginPage()
@@ -71,14 +78,18 @@ class Menu extends Component {
             this.onChangeLoginPage()
             return <Redirect to='/ekstraklasa'/>
         }
+        if (this.state.userAccountPage) {
+            this.onChangeUserAccountPage()
+            return <Redirect to='/ekstraklasa/userAccount'/>
+        }
 
         let logoutButton = (
             <div>
                 <div className="form-group row">
                     <div className="pl-3">
-                        <button type="submit" className="btn btn-primary"
+                        <Button type="submit" className="myButton"
                                 onClick={() => this.props.authorizationFunctions.logOut()}>Log Out
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -86,29 +97,29 @@ class Menu extends Component {
         let topMenu
         if (this.props.user === null) {
             topMenu = (
-                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                    <div className="xdd">
-                        <Button onClick={this.onChangeLoginPage}>Sign In</Button>{' '}
-                        <Button onClick={this.onChangeRegisterPage}>Sign Up</Button>{' '}
-                    </div>
-                </Navbar>
+                <div>
+                    <Button className="myButton" onClick={this.onChangeLoginPage}>Sign In</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeRegisterPage}>Sign Up</Button>{' '}
+                </div>
+
             )
         } else if (this.props.user.role === "ROLE_USER") {
             topMenu = (
-                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+                <div>
                     {logoutButton}
-                </Navbar>
+                    <Button className="myButton" onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeUserAccountPage}>User Account</Button>{' '}
+                </div>
             )
         } else {
             topMenu = (
-                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                    <div className="xdd">
-                        {logoutButton}
-                        <Button onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
-                        <Button onClick={this.onChangeAdminMatchesPage}>Administration Matches</Button>{' '}
-                        <Button onClick={this.onChangeAdminUsersPage}>Administration Users</Button>{' '}
-                    </div>
-                </Navbar>
+                <div>
+                    {logoutButton}
+                    <Button className="myButton" onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeUserAccountPage}>User Account</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeAdminMatchesPage}>Administration Matches</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeAdminUsersPage}>Administration Users</Button>{' '}
+                </div>
             )
         }
 

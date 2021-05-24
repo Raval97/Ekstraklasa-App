@@ -6,7 +6,7 @@ class EkstraklasaPage extends Component {
 
     render() {
         return (
-            <div>
+            <div className="row mx-auto mt-3 df-flex justify-content-center w-100" style={{backgroundColor: "#114666"}}>
                 <LeagueTable teams = {this.props.teams}/>
                 <Results
                     favouriteTeams={this.props.favouriteTeams}

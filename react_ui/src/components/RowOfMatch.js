@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Button from "react-bootstrap/Button";
-import EditMatchPanel from "./OptionsFilterComponents/EditMatchPanel";
+import EditMatchPanel from "./EditMatchPanel";
 
 class RowOfMatch extends Component {
     constructor(props) {
@@ -38,12 +38,14 @@ class RowOfMatch extends Component {
             editPanel = (
                 <EditMatchPanel id={this.props.id}
                                 place={this.props.place}
-                                data={this.props.date}
-                                homeTeam={this.props.homeTeam.name}
+                                date={this.props.data}
+                                homeTeam={this.props.homeTeam.id}
                                 homeScore={this.props.homeScore}
-                                awayTeam={this.props.awayTeam.name}
+                                awayTeam={this.props.awayTeam.id}
                                 awayScore={this.props.awayScore}
+                                round={this.props.round}
                                 teams={this.props.teams}
+                                callbackFunctions={this.props.callbackFunctions}
                 />
             )
         }
@@ -52,9 +54,9 @@ class RowOfMatch extends Component {
             <tr>
                 <td>{this.props.place}</td>
                 <td>{this.props.data}</td>
-                <td>{this.props.homeTeam}</td>
+                <td>{this.props.homeTeam.name}</td>
                 <td>{this.props.homeScore} : {this.props.awayScore} </td>
-                <td>{this.props.awayTeam}</td>
+                <td>{this.props.awayTeam.name}</td>
                 {editOptions}
                 {deleteOptions}
             </tr>
@@ -68,9 +70,9 @@ RowOfMatch.propTypes = {
     id: PropTypes.number,
     place: PropTypes.string,
     date: PropTypes.string,
-    homeTeam: PropTypes.string,
+    homeTeam:PropTypes.object,
     homeScore: PropTypes.number,
-    awayTeam: PropTypes.string,
+    awayTeam: PropTypes.object,
     awayScore: PropTypes.number,
 };
 

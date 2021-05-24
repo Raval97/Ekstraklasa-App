@@ -15,6 +15,7 @@
     "react-router": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-switch": "^6.0.0",
+    "rfs": "^9.0.3",
     "web-vitals": "^1.1.1"
   },
   "scripts": {

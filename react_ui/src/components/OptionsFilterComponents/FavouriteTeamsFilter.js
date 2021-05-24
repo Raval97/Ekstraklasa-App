@@ -8,12 +8,12 @@ class FavouriteTeamsFilter extends Component {
         let switchFavouriteTeams
         if (this.props.favouriteTeams !== undefined && this.props.favouriteTeams.length !== 0)
             switchFavouriteTeams = (
-                <div className="col-lg-3 align-middle mt-2">
-                    <label>
-                        <Switch className="react-switch mr-3" onChange={this.props.callbackFunctions.handleChangeOFT}
+                <div className="row df-flex justify-content-center w-100">
+                    <span className="" style={{fontSize: "2vw"}}>Only Favorites Teams</span>
+                    <div className="">
+                        <Switch className="mx-3" onChange={this.props.callbackFunctions.handleChangeOFT}
                                 checked={this.props.onlyFavoritesTeams}/>
-                        <span>Only Favorites Teams</span>
-                    </label>
+                    </div>
                 </div>
             )
         return (

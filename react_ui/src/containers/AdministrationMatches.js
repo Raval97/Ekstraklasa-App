@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import RowOfMatch from "../components/RowOfMatch";
 import TeamFilter from "../components/OptionsFilterComponents/TeamFilter";
-import RoundFilter from "../components/OptionsFilterComponents/RoundFilter";
-import CountOfGoalsFilter from "../components/OptionsFilterComponents/CountOfGoalsFilter";
 import NewMatchForm from "../components/NewMatchForm";
 import axios from "axios";
 import {encode as base64_encode} from "base-64";
+import InputNumberFilter from "../components/OptionsFilterComponents/InputNumberFilter";
 
 class AdministrationMatches extends Component {
     constructor(props) {
@@ -15,7 +14,7 @@ class AdministrationMatches extends Component {
         this.state = {
             queryTeamName: 0,
             queryRound: 0,
-            queryScore: 0,
+            queryScore: -1,
             showNewMatchPanel: false
         };
         this.onChangeTeamName = this.onChangeTeamName.bind(this);
@@ -61,21 +60,46 @@ class AdministrationMatches extends Component {
                 parseInt(match.awayTeam.id) === parseInt(this.state.queryTeamName))
         if (this.state.queryRound > 0)
             matches = matches.filter(match => parseInt(match.round) === parseInt(this.state.queryRound))
-        if (this.state.queryScore > 0)
+        if (this.state.queryScore >= 0)
             matches = matches.filter(match => (parseInt(match.awayScore) + parseInt(match.homeScore)) === parseInt(this.state.queryScore))
         return matches
     }
 
-    addNewMatch(team) {
-        console.log(team)
+    addNewMatch(match) {
         axios.post("http://localhost:8080/Ekstraklasa/dashboard/matches", {
-            homeTeam: team.homeTeam,
-            awayTeam: team.awayTeam,
-            homeScore: team.homeScore,
-            awayScore: team.awayScore,
-            round: team.round,
-            place: team.place,
-            date: team.date
+            homeTeam: match.homeTeam,
+            awayTeam: match.awayTeam,
+            homeScore: match.homeScore,
+            awayScore: match.awayScore,
+            round: match.round,
+            place: match.place,
+            date: match.date
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + base64_encode(this.props.user.username + ":" + this.props.user.password)
+            }
+        })
+            .then((result) => {
+                this.props.callbackFunctions.readMatches()
+                this.props.callbackFunctions.readTeams()
+                return true
+            }, (error) => {
+                console.log(error);
+                return false
+            });
+        return true
+    }
+
+    editMatch(match, id) {
+        axios.put("http://localhost:8080/Ekstraklasa/dashboard/matches/" + id, {
+            homeTeam: match.homeTeam,
+            awayTeam: match.awayTeam,
+            homeScore: match.homeScore,
+            awayScore: match.awayScore,
+            round: match.round,
+            place: match.place,
+            date: match.date
         }, {
             headers: {
                 'Content-Type': 'application/json',
@@ -102,7 +126,6 @@ class AdministrationMatches extends Component {
         })
             .then(res => res.json())
             .then((result) => {
-                    console.log(result)
                     this.props.callbackFunctions.readMatches()
                     this.props.callbackFunctions.readTeams()
                 },
@@ -120,14 +143,16 @@ class AdministrationMatches extends Component {
                                id={FilteredMatch.id}
                                place={FilteredMatch.place}
                                data={FilteredMatch.date}
-                               homeTeam={FilteredMatch.homeTeam.name}
+                               homeTeam={FilteredMatch.homeTeam}
                                homeScore={FilteredMatch.homeScore}
-                               awayTeam={FilteredMatch.awayTeam.name}
+                               awayTeam={FilteredMatch.awayTeam}
                                awayScore={FilteredMatch.awayScore}
+                               round={FilteredMatch.round}
                                adminPermisions={true}
                                teams={this.props.teams}
                                callbackFunctions={{
                                    deleteMatch: this.deleteMatch.bind(this),
+                                   editMatch: this.editMatch.bind(this),
                                }}
             />
         })
@@ -147,20 +172,18 @@ class AdministrationMatches extends Component {
                 </div>
 
                 <div className="row mt-3 w-100 mx-auto">
-                    <TeamFilter favouriteTeams={this.props.favouriteTeams} matches={this.props.matches}
-                                onlyFavoritesTeams={false} teams={this.props.teams}
-                                queryTeamName={this.state.queryTeamName}
+                    <TeamFilter teams={this.props.teams} noSpecified={true} label={'Team'}
                                 callbackFunctions={{
                                     onChangeTeamName: this.onChangeTeamName.bind(this),
                                 }}/>
-                    <RoundFilter matches={this.props.matches} queryRound={this.state.queryRound}
-                                 callbackFunctions={{
-                                     onChangeRound: this.onChangeRound.bind(this)
-                                 }}/>
-                    <CountOfGoalsFilter matches={this.props.matches} queryScore={this.state.queryScore}
-                                        callbackFunctions={{
-                                            onChangeScore: this.onChangeScore.bind(this)
-                                        }}/>
+                    <InputNumberFilter label={'Round'} length={16} start={1}
+                                       callbackFunctions={{
+                                           onChangeValue: this.onChangeRound.bind(this)
+                                       }}/>
+                    <InputNumberFilter label={'Goals'} length={15} start={0}
+                                       callbackFunctions={{
+                                           onChangeValue: this.onChangeScore.bind(this)
+                                       }}/>
                 </div>
 
                 <div className="row mx-auto mt-2">
@@ -170,7 +193,7 @@ class AdministrationMatches extends Component {
                             <th scope="col">Date</th>
                             <th scope="col">Place</th>
                             <th scope="col">Home Team</th>
-                            <th scope="col">Result</th>
+                            <th className="col2" scope="col">Result</th>
                             <th scope="col">Away Team</th>
                             <th scope="col">Delete</th>
                             <th scope="col">Edit</th>

@@ -3,9 +3,8 @@ import {Redirect} from "react-router";
 import Button from 'react-bootstrap/Button';
 import FavouriteTeamsForm from "../components/FavouriteTeamsForm";
 import AccountSettingsForm from "../components/AccountSettingsForm";
-import MenuSignInAndSignUp from "../components/MenuSignInAndSignUp";
 
-class SignUpPage extends Component {
+class UserAccount extends Component {
     constructor() {
         super();
         this.state = {
@@ -82,13 +81,9 @@ class SignUpPage extends Component {
         }
 
         return (
-            <div className="mx-auto w-75 mt-3 p-3" style={{backgroundColor: "#49a1d5"}}>
-                <div className="mx-auto " style={{width: "90%"}}>
-                    <MenuSignInAndSignUp actualSite={"Sign_Up"}
-                                         callbackFunctions={this.props.authorizationFunctions}/>
-                </div>
+            <div className="mx-auto mt-3 p-3" style={{backgroundColor: "#114666", width: "100%"}}>
                 <div className="mx-auto" style={{width: "90%"}}>
-                    <h1 className="text-center" style={{fontSize: "3vw", color: "azure"}}>Registration</h1>
+                    <h1 className="text-center" style={{fontSize: "3vw", color: "azure"}}>User Account Settings</h1>
                     {error}
                 </div>
                 <div className="mx-auto" style={{backgroundColor: "#a5d2ea", width: "90%"}}>
@@ -98,6 +93,10 @@ class SignUpPage extends Component {
                                 changeUsername: this.changeUsername.bind(this),
                                 changePassword: this.changePassword.bind(this),
                             }}/>
+                            <div className="mx-auto mt-3  w-50">
+                                <Button className="btn btn-warning px-5" style={{fontSize: "1.5vw"}}
+                                        onClick={() => this.register()}> Update </Button>
+                            </div>
                         </div>
                         <div className="w-75">
                             <FavouriteTeamsForm teams={this.props.teams}
@@ -105,10 +104,6 @@ class SignUpPage extends Component {
 
                             />
                         </div>
-                    </div>
-                    <div className="row justify-content-center pb-2">
-                        <Button className="btn btn-warning  mx-auto mt-1" style={{fontSize: "1.5vw"}}
-                                onClick={() => this.register()}> Register </Button>
                     </div>
                 </div>
 
@@ -118,4 +113,4 @@ class SignUpPage extends Component {
 
 }
 
-export default SignUpPage;
+export default UserAccount;

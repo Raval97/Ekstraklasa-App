@@ -7,6 +7,7 @@ import EkstraklasaPage from "../containers/EkstraklasaPage";
 import AdministrationMatches from "../containers/AdministrationMatches";
 import AdministrationUsers from "../containers/AdministrationUsers";
 import SignUpPage from "../containers/SignUpPage";
+import UserAccount from "../containers/UserAccount";
 
 class AppNavigation extends Component {
 
@@ -28,7 +29,7 @@ class AppNavigation extends Component {
                     authorizationFunctions={this.props.authorizationFunctions}
                 />}/>
                 <Route path="/ekstraklasa"  render={(props) => (
-                    <div className="container checklist--add-list">
+                    <div className="mx-auto mt-2 p-3" style={{width: "90%", backgroundColor: "#49a1d5"}}>
                         <Menu
                             user={this.props.user}
                             authorizationFunctions={this.props.authorizationFunctions}/>
@@ -46,6 +47,13 @@ class AppNavigation extends Component {
                         <Route path="/ekstraklasa/adminUsers" exact render={(props) => <AdministrationUsers
                             user={this.props.user}/>
                         }/>
+                        <Route path="/ekstraklasa/userAccount" exact render={(props) => <UserAccount
+                            user={this.props.user}
+                            teams={this.props.teams}
+                            successRegister={this.props.successRegister}
+                            failedOperation={this.props.failedOperation}
+                            authorizationFunctions={this.props.authorizationFunctions}
+                        />}/>
                     </div>
                 )
                 }/>

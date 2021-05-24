@@ -21,6 +21,12 @@ class App extends Component {
         this.readMatches()
     }
 
+    resetInformation(){
+        this.setState({successRegister: false});
+        this.setState({successLogout: false});
+        this.setState({failedOperation: false});
+    }
+
     readTeams() {
         fetch("http://localhost:8080/Ekstraklasa/dashboard/teams", {method: 'GET'})
             .then(res => res.json())
@@ -91,7 +97,6 @@ class App extends Component {
     }
 
     addNewUser(object) {
-        console.log(object)
         let targetUrl = 'http://localhost:8080/Ekstraklasa/signup'
         axios.post(targetUrl, {
             username: object.username,
@@ -125,7 +130,8 @@ class App extends Component {
                 authorizationFunctions={{
                     logIn: this.logIn.bind(this),
                     logOut: this.logOut.bind(this),
-                    addNewUser: this.addNewUser.bind(this)
+                    addNewUser: this.addNewUser.bind(this),
+                    resetInformation: this.resetInformation.bind(this)
                 }}
                 callbackFunctions={{
                     readTeams: this.readTeams.bind(this),

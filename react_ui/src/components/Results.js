@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import RowOfMatch from "./RowOfMatch";
 import FavouriteTeamsFilter from "./OptionsFilterComponents/FavouriteTeamsFilter";
-import RoundFilter from "./OptionsFilterComponents/RoundFilter";
 import TeamFilter from "./OptionsFilterComponents/TeamFilter";
-import CountOfGoalsFilter from "./OptionsFilterComponents/CountOfGoalsFilter";
+import InputNumberFilter from "./OptionsFilterComponents/InputNumberFilter";
 
 class Results extends Component {
     constructor(props) {
@@ -12,7 +11,7 @@ class Results extends Component {
         this.state = {
             queryTeamName: 0,
             queryRound: 0,
-            queryScore: 0,
+            queryScore: -1,
             onlyFavoritesTeams: false
         };
         this.onChangeTeamName = this.onChangeTeamName.bind(this);
@@ -26,16 +25,19 @@ class Results extends Component {
             queryTeamName: e.target.value
         })
     }
+
     onChangeRound(e) {
         this.setState({
             queryRound: e.target.value
         })
     }
+
     onChangeScore(e) {
         this.setState({
             queryScore: e.target.value
         })
     }
+
     handleChangeOFT(checked) {
         this.setState({onlyFavoritesTeams: checked});
     }
@@ -53,7 +55,7 @@ class Results extends Component {
                 parseInt(match.awayTeam.id) === parseInt(this.state.queryTeamName))
         if (this.state.queryRound > 0)
             matches = matches.filter(match => parseInt(match.round) === parseInt(this.state.queryRound))
-        if (this.state.queryScore > 0)
+        if (this.state.queryScore >= 0)
             matches = matches.filter(match => (parseInt(match.awayScore) + parseInt(match.homeScore)) === parseInt(this.state.queryScore))
         return matches
     }
@@ -64,39 +66,41 @@ class Results extends Component {
             return <RowOfMatch key={FilteredMatch.id}
                                place={FilteredMatch.place}
                                data={FilteredMatch.date}
-                               homeTeam={FilteredMatch.homeTeam.name}
+                               homeTeam={FilteredMatch.homeTeam}
                                homeScore={FilteredMatch.homeScore}
-                               awayTeam={FilteredMatch.awayTeam.name}
+                               awayTeam={FilteredMatch.awayTeam}
                                awayScore={FilteredMatch.awayScore}/>
         })
 
         return (
-            <section className="text-center bg-danger text-white">
+            <section className="text-center text-white w-50 px-1 pt-3">
                 <div className="row justify-content-center">
-                    <h1 className="text-white mt-3 ">Results</h1>
+                    <h1 style={{fontSize: "3vw", color: "#ecf6fa"}}>Results</h1>
                 </div>
                 <div className="row mt-3 w-100 mx-auto">
-                    <TeamFilter favouriteTeams={this.props.favouriteTeams} matches={this.props.matches}
-                                onlyFavoritesTeams={this.state.onlyFavoritesTeams} teams={this.props.teams}
-                                queryTeamName={this.state.queryTeamName}
-                                callbackFunctions={{
-                                    onChangeTeamName: this.onChangeTeamName.bind(this),
-                                }}/>
-                    <RoundFilter matches={this.props.matches} queryRound={this.state.queryRound}
-                                 callbackFunctions={{
-                                     onChangeRound: this.onChangeRound.bind(this)
-                                 }}/>
-                    <CountOfGoalsFilter matches={this.props.matches} queryScore={this.state.queryScore}
-                                        callbackFunctions={{
-                                            onChangeScore: this.onChangeScore.bind(this)
-                                        }}/>
+                    <div className="d-flex justify-content-between w-100">
+                        <TeamFilter favouriteTeams={this.props.favouriteTeams} teams={this.props.teams}
+                                    noSpecified={true}
+                                    onlyFavoritesTeams={this.state.onlyFavoritesTeams} label={'Team'}
+                                    callbackFunctions={{
+                                        onChangeTeamName: this.onChangeTeamName.bind(this),
+                                    }}/>
+                        <InputNumberFilter label={'Round'} length={16} start={1}
+                                           callbackFunctions={{
+                                               onChangeValue: this.onChangeRound.bind(this)
+                                           }}/>
+                        <InputNumberFilter label={'Goals'} length={15} start={0}
+                                           callbackFunctions={{
+                                               onChangeValue: this.onChangeScore.bind(this)
+                                           }}/>
+                    </div>
                     <FavouriteTeamsFilter favouriteTeams={this.props.favouriteTeams} matches={this.props.matches}
                                           teams={this.props.teams} onlyFavoritesTeams={this.state.onlyFavoritesTeams}
                                           callbackFunctions={{
                                               handleChangeOFT: this.handleChangeOFT.bind(this)
                                           }}/>
-                    <div className="row mt-5 mb-5 w-100 mx-auto">
-                        <table className="table table-striped table-light">
+                    <div className="row mt-3 mb-2 w-100 mx-auto">
+                        <table className="table table-striped table-light" style={{fontSize: "1vw"}}>
                             <thead>
                             <tr>
                                 <th>Place</th>

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect} from 'react-router'
 import PropTypes from "prop-types";
+import MenuSignInAndSignUp from "../components/MenuSignInAndSignUp";
 
 class LoginPage extends Component {
     constructor() {
@@ -8,7 +9,11 @@ class LoginPage extends Component {
         this.state = {
             username: "",
             password: "",
+            homePage: false,
+            registerPage: false
         };
+        this.onChangeHomePage = this.onChangeHomePage.bind(this);
+        this.onChangeRegisterPage = this.onChangeRegisterPage.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
     }
@@ -25,6 +30,18 @@ class LoginPage extends Component {
         })
     }
 
+    onChangeHomePage() {
+        this.setState({
+            homePage: !this.state.homePage
+        })
+    }
+
+    onChangeRegisterPage() {
+        this.setState({
+            registerPage: !this.state.registerPage
+        })
+    }
+
     render() {
         if (this.props.user !== null)
             return <Redirect to='/ekstraklasa/home'/>;
@@ -32,21 +49,21 @@ class LoginPage extends Component {
         if (this.props.failedOperation)
             info = (
                 <div id="wrongPass" className="p-1 mb-3 text-center"
-                     style={{backgroundColor: "#a1072c", color: "#fff"}}>
+                     style={{backgroundColor: "#a1072c", color: "#fff", fontSize: "1.5vw"}}>
                     Invalid username or password.
                 </div>
             )
         if (this.props.successLogout)
             info = (
                 <div id="logOut_info" className="p-1 mb-3 text-center"
-                     style={{backgroundColor: "#9db8cb", color: "#fff"}}>
+                     style={{backgroundColor: "#9db8cb", color: "#fff", fontSize: "1.5vw"}}>
                     You have been logged out.
                 </div>
             )
         if (this.props.successRegister)
             info = (
                 <div id="logOut_info" className="p-1 mb-3 text-center"
-                     style={{backgroundColor: "#5ea331", color: "#fff"}}>
+                     style={{backgroundColor: "#5ea331", color: "#fff", fontSize: "1.5vw"}}>
                     New Account is successful created, now you can log in.
                 </div>
             )
@@ -54,7 +71,7 @@ class LoginPage extends Component {
             <div className="mx-auto w-75 mt-3 p-3" style={{backgroundColor: "#49a1d5"}}>
                 <div className="mx-auto w-50 p-3 mb-10" style={{backgroundColor: "#33aaff"}}>
                     {info}
-                    <h2 className="form-signin-heading text-center">Please sign in</h2>
+                    <h2 className="form-signin-heading text-center"  style={{fontSize: "3.5vw"}}>Please sign in</h2>
                     <div className="form-group">
                         <label htmlFor="username" className="sr-only">Username</label>
                         <input type="text" className="form-control" id="username" name="username"
@@ -65,10 +82,14 @@ class LoginPage extends Component {
                         <input type="password" className="form-control" id="password" name="password"
                                required="required" placeholder="Password" onChange={this.onChangePassword}/>
                     </div>
-                    <button id="signIn" className="btn btn-lg btn-primary btn-block" type="submit"
+                    <button id="signIn" className="btn btn-lg btn-primary btn-block" type="submit" style={{fontSize: "2vw"}}
                             onClick={() => this.props.authorizationFunctions.logIn(this.state.username, this.state.password)}
                     >Sign in
                     </button>
+                </div>
+                <div className="row mx-auto w-50 mb-10 justify-content-lg-center">
+                        <MenuSignInAndSignUp actualSite={"Sign_In"}
+                                             callbackFunctions={this.props.authorizationFunctions}/>
                 </div>
             </div>
         )

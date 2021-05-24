@@ -42,28 +42,6 @@ public class DashboardAdminController {
         return new ResponseEntity<>(response, status);
     }
 
-    @RequestMapping(value = "/dashboard/teams/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteTeam(@PathVariable int id) {
-        Map<String, Object> response = teamService.delete(id);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
-        return new ResponseEntity<>(response, status);
-    }
-
-    @RequestMapping(value = "/dashboard/teams/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateTeam(@PathVariable int id, @RequestBody String object) {
-        Map<String, Object> response = teamService.editTeam(id, object);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
-        return new ResponseEntity<>(response, status);
-    }
-
-    @RequestMapping(value = "/dashboard/teams", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addNewTeam(@RequestBody String object) {
-        Map<String, Object> response = teamService.save(object);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
-        return new ResponseEntity<>(response, status);
-    }
-
     @RequestMapping(value = "/dashboard/matches/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteMatch(@PathVariable int id) {
         Optional<Match> match = matchService.getMatch(id);
@@ -79,20 +57,20 @@ public class DashboardAdminController {
 
     @RequestMapping(value = "/dashboard/matches/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateMatch(@PathVariable int id, @RequestBody String object) {
-        Optional<Team> homeTeam = teamService.getTeamFromPostRequest(object, "homeTeam");
-        Optional<Team> awayTeam = teamService.getTeamFromPostRequest(object, "awayTeam");
-        Match newMatch = matchService.getFromRequest(object, homeTeam, awayTeam);
+        Optional<Team> newHomeTeam = teamService.getTeamFromPostRequest(object, "homeTeam");
+        Optional<Team> newAwayTeam = teamService.getTeamFromPostRequest(object, "awayTeam");
         Optional<Match> oldMatch = matchService.getMatch(id);
         List<Team> teams = new ArrayList<>();
         oldMatch.ifPresent(match -> teams.addAll(Arrays.asList(match.getHomeTeam(), match.getAwayTeam())));
-        Map<String, Object> response = matchService.editMatch(id, newMatch);
-        if(homeTeam.isPresent() && awayTeam.isPresent()) {
-            teams.addAll(Arrays.asList(homeTeam.get(), awayTeam.get()));
+        Map<String, Object> response = matchService.editMatch(oldMatch, object, newHomeTeam, newAwayTeam);
+        if(newHomeTeam.isPresent() && newAwayTeam.isPresent()) {
+            teams.addAll(Arrays.asList(newHomeTeam.get(), newAwayTeam.get()));
             teams.stream()
                     .filter(Team.distinctByKey(Team::getName))
                     .forEach(teamService::updateStatisticsOfTeam);
         }
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
+                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
@@ -100,13 +78,14 @@ public class DashboardAdminController {
     public ResponseEntity<?> addNewMatch(@RequestBody String object) {
         Optional<Team> homeTeam = teamService.getTeamFromPostRequest(object, "homeTeam");
         Optional<Team> awayTeam = teamService.getTeamFromPostRequest(object, "awayTeam");
-        Match newMatch = matchService.getFromRequest(object, homeTeam, awayTeam);
+        Optional<Match> newMatch = matchService.getFromRequest(object, homeTeam, awayTeam);
         Map<String, Object> response = matchService.save(newMatch);
         if(homeTeam.isPresent() && awayTeam.isPresent()) {
             teamService.updateStatisticsOfTeam(homeTeam.get());
             teamService.updateStatisticsOfTeam(awayTeam.get());
         }
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
+                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 

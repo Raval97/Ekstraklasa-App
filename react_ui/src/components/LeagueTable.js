@@ -5,7 +5,9 @@ import RowOfTeam from "./RowOfTeam";
 class LeagueTable extends Component {
 
     render() {
-        var teams = this.props.teams.map((team, index) => {
+        let sortedTeams = this.props.teams
+            .sort((a, b) => ((a.points < b.points) || ((a.goalsScores - a.goalsLoses) < (b.goalsScores - b.goalsLoses))))
+        let teams = sortedTeams.map((team, index) => {
             return <RowOfTeam key={team.id}
                               id={index + 1}
                               name={team.name}
@@ -18,21 +20,21 @@ class LeagueTable extends Component {
         })
 
         return (
-            <div>
+            <div className="w-50 p-3">
                 <div className="row justify-content-center">
-                    <h1>Ekstraklasa Table</h1>
+                    <h1 style={{fontSize: "3vw", color: "#ecf6fa"}}>Ekstraklasa Table</h1>
                 </div>
 
-                <table className="table table-striped table-dark">
-                    <thead className="thead-dark">
+                <table className="table table-striped table-info" style={{fontSize: "1vw"}}>
+                    <thead className="thead-info">
                     <tr>
-                        <td>Position</td>
-                        <td>Name</td>
-                        <td>Points</td>
-                        <td>Gaols</td>
-                        <td>Wins</td>
-                        <td>Draws</td>
-                        <td>Loses</td>
+                        <th>Pos.</th>
+                        <th>Name</th>
+                        <th>Points</th>
+                        <th>Goals</th>
+                        <th>Wins</th>
+                        <th>Draws</th>
+                        <th>Loses</th>
                     </tr>
                     </thead>
                     <tbody>
