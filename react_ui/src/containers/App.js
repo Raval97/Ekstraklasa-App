@@ -9,10 +9,10 @@ class App extends Component {
         this.state = {
             user: null,
             successLogout: false,
-            failedOperation: false,
             successRegister: false,
             teams: [],
             matches: [],
+            favouriteTeams: []
         };
     }
 
@@ -24,7 +24,6 @@ class App extends Component {
     resetInformation(){
         this.setState({successRegister: false});
         this.setState({successLogout: false});
-        this.setState({failedOperation: false});
     }
 
     readTeams() {
@@ -72,11 +71,12 @@ class App extends Component {
             )
     }
 
-    logIn(login, password) {
+    async logIn(login, password) {
+        let resp;
         let targetUrl = 'http://localhost:8080/Ekstraklasa/login'
         let body = "username="+login+"&password="+password
         let headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        axios.post(targetUrl, body, {
+        await axios.post(targetUrl, body, {
             headers: headers
         }).then((response) => {
             let loggedUser ={
@@ -85,30 +85,55 @@ class App extends Component {
                 role: response.data.role_user
             }
             this.setState({user: loggedUser})
-            this.setState({failedOperation: false})
             this.setState({successLogout: false})
             this.setState({successRegister: false})
             this.readFavouriteTeams()
+            resp = {
+                success: true,
+                message: "Successful log in"
+            }
         }, (error) => {
-            this.setState({failedOperation: true})
             this.setState({successLogout: false})
             this.setState({successRegister: false})
+            resp = {
+                success: false,
+                message: "Invalid username or password"
+            }
         })
+        return resp
     }
 
-    addNewUser(object) {
+    async addNewUser(object) {
+        let resp
         let targetUrl = 'http://localhost:8080/Ekstraklasa/signup'
-        axios.post(targetUrl, {
+        await axios.post(targetUrl, {
             username: object.username,
             password: object.password,
             favouriteTeams: object.favouriteTeams
         }).then((response) => {
             this.setState({successRegister: true})
-            this.setState({failedOperation: false})
             this.setState({successLogout: false})
+            resp = {
+                success: true,
+                message: "Successful create user"
+            }
+
         }, (error) => {
-            this.setState({failedOperation: true})
             this.setState({successLogout: false})
+            resp = {
+                success: false,
+                message: "Username is not unique"
+            }
+        })
+        return resp
+    }
+
+    async updateUser(username, password){
+        let temp = this.state.user
+        temp.username = username
+        temp.password = password
+        await this.setState({
+            user: temp
         })
     }
 
@@ -121,7 +146,6 @@ class App extends Component {
         return (
             <AppNavigation
                 user={this.state.user}
-                failedOperation={this.state.failedOperation}
                 successRegister={this.state.successRegister}
                 successLogout={this.state.successLogout}
                 teams={this.state.teams}
@@ -136,7 +160,8 @@ class App extends Component {
                 callbackFunctions={{
                     readTeams: this.readTeams.bind(this),
                     readMatches: this.readMatches.bind(this),
-                    // readFavouriteTeams: this.readFavouriteTeams().bind(this)
+                    readFavouriteTeams: this.readFavouriteTeams.bind(this),
+                    updateUser: this.updateUser.bind(this)
                 }}
             />
         );

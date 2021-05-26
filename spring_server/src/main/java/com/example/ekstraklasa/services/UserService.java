@@ -1,11 +1,13 @@
 package com.example.ekstraklasa.services;
 
+import com.example.ekstraklasa.models.FavouriteTeam;
 import com.example.ekstraklasa.models.Role;
 import com.example.ekstraklasa.models.Users;
 import com.example.ekstraklasa.repositories.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -90,5 +92,30 @@ public class UserService implements UserDetailsService {
             System.out.println(ex);
         }
         return Optional.empty();
+    }
+
+    public Map<String, Object> update(Users user, String object) {
+        Map<String, Object> response = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = mapper.readTree(object);
+            String username = mapper.convertValue(jsonNode.get("username"), String.class);
+            String password = mapper.convertValue(jsonNode.get("password"), String.class);
+            if(isUsernameUnique(username)) {
+                user.setUsername(username);
+                user.setPassword(password);
+                repo.save(user);
+                response.put("user", user);
+                response.put("Status", 200);
+            }
+            else {
+                response.put("error", "Username is not unique");
+                response.put("Status", 400);
+            }
+        } catch (Exception ex) {
+            response.put("error", "Wrong data format");
+            response.put("Status", 500);
+        }
+        return response;
     }
 }

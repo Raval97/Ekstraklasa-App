@@ -71,14 +71,6 @@ public class DashboardController {
         return new ResponseEntity<>(response, status);
     }
 
-//    @RequestMapping(value = "/dashboard/teams/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> getTeam(@PathVariable int id) {
-//        Map<String,Object> response = teamService.get(id);
-//        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-//                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
-//        return new ResponseEntity<>(response, status);
-//    }
-
     @RequestMapping(value = "/dashboard/matches", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMatches() {
         Map<String,Object> response = matchService.listAll();

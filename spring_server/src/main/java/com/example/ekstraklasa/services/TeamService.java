@@ -35,11 +35,11 @@ public class TeamService {
 
     public Map<String, Object> getAllFavouriteByUserId(Long id) {
         List<Team> teams = repo.findFavouriteTeamByUserId(id);
-        List<String> teamsNames = new ArrayList<>();
-        teams.forEach(team -> teamsNames.add(team.getName()));
+        List<Long> teamsIds = new ArrayList<>();
+        teams.forEach(team -> teamsIds.add(team.getId()));
         Map<String, Object> result = new HashMap<>();
         try {
-            result.put("teams", teamsNames);
+            result.put("teams", teamsIds);
             result.put("Status", 200);
         } catch (Exception ex) {
             result.put("Error", ex.getMessage());
@@ -53,14 +53,15 @@ public class TeamService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode jsonNode = mapper.readTree(object);
-            List<String> names = mapper.convertValue(jsonNode.get("favouriteTeams"), List.class);
+            System.out.println(object);
+            List<Integer> ids = mapper.convertValue(jsonNode.get("favouriteTeams"), List.class);
             teams = Optional.of(new ArrayList<>());
-            names.forEach(name -> {
-                teams.get().add(repo.findByName(name));
+            ids.forEach(id -> {
+                teams.get().add(repo.findById(id.longValue()).get());
             });
             return teams;
         } catch (Exception ex) {
-            System.out.println("error");
+            System.out.println("error:" + ex);
         }
         return Optional.empty();
     }

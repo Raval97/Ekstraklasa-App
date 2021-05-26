@@ -9,11 +9,8 @@ class LoginPage extends Component {
         this.state = {
             username: "",
             password: "",
-            homePage: false,
-            registerPage: false
+            response: {}
         };
-        this.onChangeHomePage = this.onChangeHomePage.bind(this);
-        this.onChangeRegisterPage = this.onChangeRegisterPage.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
     }
@@ -30,29 +27,26 @@ class LoginPage extends Component {
         })
     }
 
-    onChangeHomePage() {
-        this.setState({
-            homePage: !this.state.homePage
-        })
-    }
-
-    onChangeRegisterPage() {
-        this.setState({
-            registerPage: !this.state.registerPage
-        })
+    async logIn(){
+        let resp = await this.props.authorizationFunctions.logIn(this.state.username, this.state.password)
+        this.setState({response: resp})
     }
 
     render() {
-        if (this.props.user !== null)
-            return <Redirect to='/ekstraklasa/home'/>;
         let info
-        if (this.props.failedOperation)
-            info = (
-                <div id="wrongPass" className="p-1 mb-3 text-center"
-                     style={{backgroundColor: "#a1072c", color: "#fff", fontSize: "1.5vw"}}>
-                    Invalid username or password.
-                </div>
-            )
+        if (this.state.response.success !== undefined){
+            if(this.state.response.success === true)
+                return <Redirect to='/ekstraklasa/home'/>;
+            else {
+                info = (
+                    <div id="wrongPass" className="p-1 mb-3 text-center"
+                         style={{backgroundColor: "#a1072c", color: "#fff", fontSize: "1.5vw"}}>
+                        {this.state.response.message}
+                    </div>
+                )
+            }
+        }
+
         if (this.props.successLogout)
             info = (
                 <div id="logOut_info" className="p-1 mb-3 text-center"
@@ -83,8 +77,7 @@ class LoginPage extends Component {
                                required="required" placeholder="Password" onChange={this.onChangePassword}/>
                     </div>
                     <button id="signIn" className="btn btn-lg btn-primary btn-block" type="submit" style={{fontSize: "2vw"}}
-                            onClick={() => this.props.authorizationFunctions.logIn(this.state.username, this.state.password)}
-                    >Sign in
+                            onClick={() => this.logIn()}>Sign in
                     </button>
                 </div>
                 <div className="row mx-auto w-50 mb-10 justify-content-lg-center">
@@ -97,8 +90,6 @@ class LoginPage extends Component {
 }
 
 LoginPage.propTypes = {
-    user: PropTypes.object,
-    failedAuthorization: PropTypes.bool,
     successLogout: PropTypes.bool,
     authorizationFunctions: PropTypes.object
 };

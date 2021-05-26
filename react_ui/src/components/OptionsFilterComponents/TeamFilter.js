@@ -7,7 +7,7 @@ class TeamFilter extends Component {
         let optionTeamsTemp = this.props.teams
         if (this.props.onlyFavoritesTeams !== undefined && this.props.favouriteTeams !== undefined &&
             this.props.onlyFavoritesTeams === true)
-            optionTeamsTemp = this.props.teams.filter(team => this.props.favouriteTeams.includes(team.name))
+            optionTeamsTemp = this.props.teams.filter(team => this.props.favouriteTeams.includes(team.id))
         optionsTeams = (
             optionTeamsTemp.map(team => {
                 return (

@@ -50,8 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/dashboard/**").permitAll()
-                .antMatchers("/favourite_team/**").hasRole("USER")
+                .antMatchers("/favourite_team/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/signup/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/update_account/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/dashboard/**").hasRole("ADMIN")
@@ -98,7 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         Team team7 = new Team("Piast Gliwice", 3, 3, 1, 0, 1, 0);
         Team team8 = new Team("Podbeskidzie Bielsko-Biała", 0, 1, 3, 1, 0, 0);
         Team team9 = new Team("Pogoń Szczeciń", 0, 0, 3, 1, 0, 0);
-        Team team10 = new Team("Raków Częstochowwa", 3, 3, 0, 0, 1, 0);
+        Team team10 = new Team("Raków Częstochowa", 3, 3, 0, 0, 1, 0);
         Team team11 = new Team("Śląsk Wrocław", 3, 1, 0, 0, 1, 0);
         Team team12 = new Team("Stal Mielec", 0, 0, 1, 1, 0, 0);
         Team team13 = new Team("Warta Poznań", 0, 0, 2, 1, 0, 0);

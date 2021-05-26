@@ -25,7 +25,7 @@ class FavouriteTeamsFilter extends Component {
 }
 
 FavouriteTeamsFilter.propTypes = {
-    matches: PropTypes.arrayOf(PropTypes.object)
+    favouriteTeams: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default FavouriteTeamsFilter;

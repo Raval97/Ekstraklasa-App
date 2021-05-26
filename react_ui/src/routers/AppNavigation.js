@@ -15,17 +15,12 @@ class AppNavigation extends Component {
         return (
             <Router>
                 <Route path="/login" exact render={(props) => <LoginPage
-                    user={this.props.user}
-                    failedOperation={this.props.failedOperation}
                     successRegister={this.props.successRegister}
                     successLogout={this.props.successLogout}
                     authorizationFunctions={this.props.authorizationFunctions}
                 />}/>
                 <Route path="/sign_up" exact render={(props) => <SignUpPage
-                    user={this.props.user}
                     teams={this.props.teams}
-                    successRegister={this.props.successRegister}
-                    failedOperation={this.props.failedOperation}
                     authorizationFunctions={this.props.authorizationFunctions}
                 />}/>
                 <Route path="/ekstraklasa"  render={(props) => (
@@ -48,11 +43,10 @@ class AppNavigation extends Component {
                             user={this.props.user}/>
                         }/>
                         <Route path="/ekstraklasa/userAccount" exact render={(props) => <UserAccount
-                            user={this.props.user}
                             teams={this.props.teams}
-                            successRegister={this.props.successRegister}
-                            failedOperation={this.props.failedOperation}
-                            authorizationFunctions={this.props.authorizationFunctions}
+                            user={this.props.user}
+                            favouriteTeams={this.props.favouriteTeams}
+                            callbackFunctions={this.props.callbackFunctions}
                         />}/>
                     </div>
                 )

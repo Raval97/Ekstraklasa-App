@@ -46,8 +46,8 @@ class Results extends Component {
         let matches = this.props.matches
         if (this.state.onlyFavoritesTeams === true)
             matches = matches.filter(match =>
-                this.props.favouriteTeams.includes(match.homeTeam.name) ||
-                this.props.favouriteTeams.includes(match.awayTeam.name)
+                this.props.favouriteTeams.includes(match.homeTeam.id) ||
+                this.props.favouriteTeams.includes(match.awayTeam.id)
             )
         if (this.state.queryTeamName > 0)
             matches = matches.filter(match =>

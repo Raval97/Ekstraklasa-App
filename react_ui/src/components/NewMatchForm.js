@@ -12,8 +12,7 @@ class AdminNowyMecz extends Component {
             awayTeam: 0,
             homeScore: 0,
             awayScore: 0
-
-        };
+        }
         this.onChangeDate = this.onChangeDate.bind(this);
         this.onChangeRound = this.onChangeRound.bind(this);
         this.onChangePlace = this.onChangePlace.bind(this);
@@ -65,42 +64,82 @@ class AdminNowyMecz extends Component {
         })
     }
 
+    componentWillReceiveProps(nextProps, a) {
+        if (nextProps.match !== undefined && nextProps.match.homeTeam !== undefined) {
+            let temp = Object.assign({}, nextProps.match)
+            this.setState({date: temp.date})
+            this.setState({round: temp.round})
+            this.setState({place: temp.place})
+            this.setState({homeTeam: temp.homeTeam.id})
+            this.setState({awayTeam: temp.awayTeam.id})
+            this.setState({homeScore: temp.homeScore})
+            this.setState({awayScore: temp.awayScore})
+        } else {
+            this.setState({date: ""})
+            this.setState({round: 1})
+            this.setState({place: ""})
+            this.setState({homeTeam: 0})
+            this.setState({awayTeam: 0})
+            this.setState({homeScore: 0})
+            this.setState({awayScore: 0})
+        }
+    }
 
-    render() {
-        let inputTeams1, inputTeams2, optionsTeams
-        optionsTeams = (
+    getOptionTeams(id) {
+        let optionsTeams = (
             this.props.teams
                 .map(team => {
+                    let selected = (team.id === id) ? "selected" : ""
                     return (
-                        <option key={team.id} value={team.id}>
+                        <option key={team.id} value={team.id} selected={selected}>
                             {team.name}
                         </option>
                     )
                 })
         )
+        return optionsTeams
+    }
+
+    render() {
+        let confirmButton, inputTeams1, inputTeams2
+        if (this.props.panelForm === "Create") {
+            confirmButton = (
+                <Button variant="success" style={{fontSize: "2vw"}} onClick={() => this.props.callbackFunctions.addNewMatch(this.state)}>
+                    Create
+                </Button>
+            )
+        } else {
+            confirmButton = (
+                <Button variant="success" style={{fontSize: "2vw"}}
+                        onClick={() => this.props.callbackFunctions.editMatch(this.state, this.props.match.id)}>
+                    Update
+                </Button>
+            )
+        }
         inputTeams1 = (
             <select className="form-control" onChange={this.onChangeIdHome}>
                 <option key={0} value={0}>Home Team</option>
-                {optionsTeams}
+                {this.getOptionTeams(this.state.homeTeam)}
             </select>
         )
         inputTeams2 = (
             <select className="form-control" onChange={this.onChangeIdAway}>
                 <option key={0} value={0}>Away Team</option>
-                {optionsTeams}
+                {this.getOptionTeams(this.state.awayTeam)}
             </select>
         )
 
         return (
-            <section className="bg-secondary text-white pt-5 pb-5 mt-2 rounded-left">
-                <div className="row mt-2">
-                    <div className="col-lg-4">
-                        <label className="col-lg-4">Date of the match</label>
-                        <input type="date" onChange={this.onChangeDate}/>
+            <div className="p-3 m d-flex flex-column"
+                 style={{backgroundColor: "#5686ac", fontSize: "1.5vw", color: "#eee"}}>
+                <div>
+                    <div className="my-2">
+                        <label className="col-lg-6">Date of the match</label>
+                        <input className="col-lg-6" type="date" onChange={this.onChangeDate} value={this.state.date}/>
                     </div>
-                    <div className="col-lg-3">
-                        <label className="col-lg-5">Round</label>
-                        <input style={{maxWidth: "40px"}} type="number"
+                    <div className="mb-2">
+                        <label className="col-lg-6">Round</label>
+                        <input className="col-lg-6" type="number"
                                placeholder={this.state.round}
                                value={this.state.round}
                                min={1}
@@ -108,39 +147,36 @@ class AdminNowyMecz extends Component {
                                step={1}
                                onChange={this.onChangeRound}/>
                     </div>
-                    <div className="col-lg-4">
-                        <label className="col-lg-5">Place of the match</label>
-                        <input type="text" className="col-lg-6" placeholder={this.state.place}
+                    <div className="mb-2">
+                        <label className="col-lg-6">Place of the match</label>
+                        <input type="text" className="col-lg-6" placeholder="enter the city"
                                value={this.state.place} onChange={this.onChangePlace}/>
                     </div>
                 </div>
                 <div className="row mt-3 ">
-                    <div className="col-lg-8">
-                        <form className="col-lg-12">{inputTeams1}</form>
+                    <div className="col-lg-6">
+                        <form>{inputTeams1}</form>
                     </div>
-                    <div className="col-lg-4">
-                        <label className="col-lg-3">Score</label>
-                        <input style={{maxWidth: "70px"}} type="number" placeholder={this.state.homeScore}
+                    <div className="col-lg-6">
+                        <label className="col-lg-6">Score</label>
+                        <input className="col-lg-6" type="number" placeholder={this.state.homeScore}
                                value={this.state.homeScore} min={0} step={1} onChange={this.onChangeScoreHome}/>
                     </div>
                 </div>
                 <div className="row mt-3">
-                    <div className="col-lg-8">
-                        <form className="col-lg-12">{inputTeams2}</form>
+                    <div className="col-lg-6">
+                        <form>{inputTeams2}</form>
                     </div>
-                    <div className="col-lg-4">
-                        <label className="col-lg-3">Score</label>
-                        <input style={{maxWidth: "70px"}} type="number" placeholder={this.state.awayScore}
+                    <div className="col-lg-6">
+                        <label className="col-lg-6">Score</label>
+                        <input className="col-lg-6" type="number" placeholder={this.state.awayScore}
                                value={this.state.awayScore} min={0} step={1} onChange={this.onChangeScoreAway}/>
                     </div>
                 </div>
                 <div className="row justify-content-center mt-5">
-                    <Button variant="success"
-                             onClick={() => this.props.callbakFunctions.addNewMatch(this.state) ? console.log("Dodano") :
-                                 alert("Sprawdz Poprawnosc Danych")}
-                    >POTWIERDŹ</Button>
+                    {confirmButton}
                 </div>
-            </section>
+            </div>
         )
     }
 }

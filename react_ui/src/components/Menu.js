@@ -75,8 +75,8 @@ class Menu extends Component {
             return <Redirect to='/ekstraklasa/adminUsers'/>
         }
         if (this.state.ekstraklasaPage) {
-            this.onChangeLoginPage()
-            return <Redirect to='/ekstraklasa'/>
+            this.onChangeEkstraklasaPage()
+            return <Redirect to='/ekstraklasa/home'/>
         }
         if (this.state.userAccountPage) {
             this.onChangeUserAccountPage()
@@ -117,15 +117,23 @@ class Menu extends Component {
                     {logoutButton}
                     <Button className="myButton" onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
                     <Button className="myButton" onClick={this.onChangeUserAccountPage}>User Account</Button>{' '}
-                    <Button className="myButton" onClick={this.onChangeAdminMatchesPage}>Administration Matches</Button>{' '}
-                    <Button className="myButton" onClick={this.onChangeAdminUsersPage}>Administration Users</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeAdminMatchesPage}>Administration
+                        Matches</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeAdminUsersPage}>Administration
+                        Users</Button>{' '}
                 </div>
             )
         }
 
         return (
-            <div>
-                {topMenu}
+            <div className="mt-3 d-flex justify-content-around w-100">
+                <div className="w-75">
+                    {topMenu}
+                </div>
+                <div className="w-25">
+                    <img className="pl-5 float-right" src={process.env.PUBLIC_URL + '/logo.png'}
+                         alt="Ekstraklasa" width="400" height="100"/>
+                </div>
             </div>
         )
     }

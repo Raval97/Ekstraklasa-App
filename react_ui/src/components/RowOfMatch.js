@@ -1,26 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Button from "react-bootstrap/Button";
-import EditMatchPanel from "./EditMatchPanel";
 
 class RowOfMatch extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showEditMatchPanel: false
-        };
-        this.onChangeShowEditMatchPanel = this.onChangeShowEditMatchPanel.bind(this);
-    }
-
-    onChangeShowEditMatchPanel(e) {
-        this.setState({
-            showEditMatchPanel: !this.state.showEditMatchPanel
-        })
-    }
-
 
     render() {
-        let deleteOptions, editOptions, editPanel
+        let deleteOptions, editOptions
         if (this.props.adminPermisions !== undefined && this.props.adminPermisions === true) {
             deleteOptions = (
                 <td>
@@ -30,25 +15,13 @@ class RowOfMatch extends Component {
                 </td>)
             editOptions = (
                 <td>
-                    <Button variant="info" onClick={this.onChangeShowEditMatchPanel}>Edit</Button>
+                    <Button variant="info" onClick={() => this.props.callbackFunctions.setMatchPanelToEdit(this.props.id)}>
+                        Edit
+                    </Button>
                 </td>
             )
         }
-        if (this.state.showEditMatchPanel === true) {
-            editPanel = (
-                <EditMatchPanel id={this.props.id}
-                                place={this.props.place}
-                                date={this.props.data}
-                                homeTeam={this.props.homeTeam.id}
-                                homeScore={this.props.homeScore}
-                                awayTeam={this.props.awayTeam.id}
-                                awayScore={this.props.awayScore}
-                                round={this.props.round}
-                                teams={this.props.teams}
-                                callbackFunctions={this.props.callbackFunctions}
-                />
-            )
-        }
+
         return (
             <tbody>
             <tr>
@@ -60,7 +33,6 @@ class RowOfMatch extends Component {
                 {editOptions}
                 {deleteOptions}
             </tr>
-            {editPanel}
             </tbody>
         )
     }

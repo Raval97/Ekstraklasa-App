@@ -12,28 +12,13 @@ class SignUpPage extends Component {
             username: "",
             password: "",
             favouriteTeams: [],
-            homePage: false,
-            registerPage: false,
-            validInputData: false
+            validInputData: false,
+            response: {}
         };
-        this.onChangeHomePage = this.onChangeHomePage.bind(this);
-        this.onChangeLoginPage = this.onChangeLoginPage.bind(this);
-        this.onChangeValidInputData = this.onChangeValidInputData.bind(this);
+       this.onChangeValidInputData = this.onChangeValidInputData.bind(this);
     }
 
-    onChangeHomePage() {
-        this.setState({
-            homePage: !this.state.homePage
-        })
-    }
-
-    onChangeLoginPage() {
-        this.setState({
-            registerPage: !this.state.registerPage
-        })
-    }
-
-    onChangeValidInputData() {
+   onChangeValidInputData() {
         this.setState({
             validInputData: !this.validInputData
         })
@@ -57,22 +42,23 @@ class SignUpPage extends Component {
         })
     }
 
-    register(){
+    async register(){
         this.setState({validInputData: false})
-        if(this.state.username.length > 3 && this.state.password.length > 3)
-            this.props.authorizationFunctions.addNewUser(this.state)
+        if(this.state.username.length > 3 && this.state.password.length > 3){
+            let resp = await this.props.authorizationFunctions.addNewUser(this.state)
+            this.setState({response: resp})
+        }
         else
             this.onChangeValidInputData()
     }
 
     render() {
-        if (this.props.successRegister === true) {
+        if (this.state.response.success !== undefined && this.state.response.success === true) {
             return <Redirect to='/login'/>
         }
-
-        let errorBody = (this.state.validInputData ? "to short username or password" : "Username is not unique")
+        let errorBody = (this.state.validInputData ? "to short username or password" : this.state.response.message)
         let error
-        if (this.props.failedOperation || this.state.validInputData) {
+        if ((this.state.response.success !== undefined && this.state.response.success === false) || this.state.validInputData) {
             error = (
                 <div className="mx-auto p-1 mb-3 text-center"
                      style={{backgroundColor: "#a1072c", color: "#fff", fontSize: "1.5vw", width: "35%"}}>

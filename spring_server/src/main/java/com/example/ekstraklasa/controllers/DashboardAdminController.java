@@ -80,7 +80,7 @@ public class DashboardAdminController {
         Optional<Team> awayTeam = teamService.getTeamFromPostRequest(object, "awayTeam");
         Optional<Match> newMatch = matchService.getFromRequest(object, homeTeam, awayTeam);
         Map<String, Object> response = matchService.save(newMatch);
-        if(homeTeam.isPresent() && awayTeam.isPresent()) {
+        if(newMatch.isPresent() && homeTeam.isPresent() && awayTeam.isPresent()) {
             teamService.updateStatisticsOfTeam(homeTeam.get());
             teamService.updateStatisticsOfTeam(awayTeam.get());
         }

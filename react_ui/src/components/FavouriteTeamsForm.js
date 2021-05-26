@@ -8,6 +8,15 @@ class FavouriteTeamsForm extends Component {
         };
     }
 
+    componentDidMount() {
+        let temp = Object.assign([], this.props.favouriteTeams)
+        if(this.props.favouriteTeams !== undefined){
+            this.setState({
+                favouriteTeams: temp
+            })
+        }
+    }
+
     selectTeam(id) {
         let newState = this.state.favouriteTeams
         let index = newState.findIndex((value) => value === id)
@@ -27,7 +36,6 @@ class FavouriteTeamsForm extends Component {
 
 
     render() {
-
         let optionsTeams = (this.props.teams.map(team => {
             return (
                 <div key={team.id} onClick={() => this.selectTeam(team.id)}

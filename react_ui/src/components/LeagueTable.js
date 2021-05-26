@@ -31,6 +31,7 @@ class LeagueTable extends Component {
                         <th>Pos.</th>
                         <th>Name</th>
                         <th>Points</th>
+                        <th>M</th>
                         <th>Goals</th>
                         <th>Wins</th>
                         <th>Draws</th>

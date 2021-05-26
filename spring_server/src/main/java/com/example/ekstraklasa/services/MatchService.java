@@ -75,7 +75,7 @@ public class MatchService {
 
     public Map<String, Object> save(Optional<Match> newMatch) {
         Map<String, Object> result = new HashMap<>();
-        if (!newMatch.isPresent()) {
+        if (newMatch.isPresent()) {
             repo.save(newMatch.get());
             result.put("match", newMatch);
             result.put("Status", 200);

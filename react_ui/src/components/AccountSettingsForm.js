@@ -25,6 +25,17 @@ class AccountSettingsForm extends Component {
         this.props.callbackFunctions.changePassword(e.target.value)
     }
 
+    componentDidMount() {
+        if(this.props.user !== undefined){
+            this.setState({
+                username: this.props.user.username
+            })
+            this.setState({
+                password: this.props.user.password
+            })
+        }
+    }
+
 
     render() {
         return (
@@ -33,12 +44,12 @@ class AccountSettingsForm extends Component {
                 <div className="row p-3 mt-1 justify-content-lg-left">
                     <label className="col-3" style={{fontSize: "1.5vw"}}>Username</label>{" "}
                     <label className="col-2"> </label>
-                    <input className="col-6" style={{fontSize: "1.5vw"}} type="text" onChange={this.onChangeName}/>
+                    <input className="col-6" style={{fontSize: "1.5vw"}} type="text" onChange={this.onChangeName}  value={this.state.username}/>
                 </div>
                 <div className="row p-3 justify-content-lg-left">
                     <label className="col-3" style={{fontSize: "1.5vw"}}>Password</label>{" "}
                     <label className="col-2"> </label>
-                    <input className="col-6" style={{fontSize: "1.5vw"}} type="password" onChange={this.onChangePassword}/>
+                    <input className="col-6" style={{fontSize: "1.5vw"}} type="password" onChange={this.onChangePassword} value={this.state.password}/>
                 </div>
             </div>
         )
