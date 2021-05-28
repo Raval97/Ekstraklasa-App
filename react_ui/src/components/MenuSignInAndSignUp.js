@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect} from 'react-router'
 import Button from 'react-bootstrap/Button';
+import PropTypes from "prop-types";
 
 class MenuSignInAndSignUp extends Component {
     constructor() {
@@ -38,15 +39,12 @@ class MenuSignInAndSignUp extends Component {
 
     render() {
         if (this.state.loginPage) {
-            this.onChangeLoginPage()
             return <Redirect to='/login'/>
         }
         if (this.state.registerPage) {
-            this.onChangeRegisterPage()
             return <Redirect to='/sign_up'/>
         }
         if (this.state.homePage) {
-            this.onChangeHomePage()
             return <Redirect to='/ekstraklasa/home'/>
         }
 
@@ -54,24 +52,28 @@ class MenuSignInAndSignUp extends Component {
         if (this.props.actualSite === "Sign_In") {
             secondOption = (
                 <Button className="m-1 myButton"
-                        onClick={this.onChangeRegisterPage}>Sign Up</Button>
+                        onClick={() => this.onChangeRegisterPage()}>Sign Up</Button>
             )
         } else {
             secondOption = (
                 <Button className="m-1 myButton"
-                        onClick={this.onChangeLoginPage}>Sign In</Button>
+                        onClick={() => this.onChangeLoginPage()}>Sign In</Button>
             )
         }
 
         return (
             <div className="mb-10 d-flex justify-content-lg-left">
-                <Button className="m-1 myButton"
-                        onClick={this.onChangeHomePage}>Home Page</Button>
+                <Button className="m-1 myButton" onClick={() => this.onChangeHomePage()}>Home Page</Button>
                 {secondOption}
             </div>
         )
     }
 
 }
+
+MenuSignInAndSignUp.propTypes = {
+    actualSite: PropTypes.string,
+    callbackFunctions: PropTypes.object
+};
 
 export default MenuSignInAndSignUp;

@@ -21,7 +21,7 @@ class App extends Component {
         this.readMatches()
     }
 
-    resetInformation(){
+    resetInformation() {
         this.setState({successRegister: false});
         this.setState({successLogout: false});
     }
@@ -74,12 +74,12 @@ class App extends Component {
     async logIn(login, password) {
         let resp;
         let targetUrl = 'http://localhost:8080/Ekstraklasa/login'
-        let body = "username="+login+"&password="+password
+        let body = "username=" + login + "&password=" + password
         let headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         await axios.post(targetUrl, body, {
             headers: headers
         }).then((response) => {
-            let loggedUser ={
+            let loggedUser = {
                 username: login,
                 password: password,
                 role: response.data.role_user
@@ -101,6 +101,11 @@ class App extends Component {
             }
         })
         return resp
+    }
+
+    logOut() {
+        this.setState({user: null})
+        this.setState({successLogout: true})
     }
 
     async addNewUser(object) {
@@ -128,18 +133,13 @@ class App extends Component {
         return resp
     }
 
-    async updateUser(username, password){
+    async updateUser(username, password) {
         let temp = this.state.user
         temp.username = username
         temp.password = password
         await this.setState({
             user: temp
         })
-    }
-
-    logOut() {
-        this.setState({user: null})
-        this.setState({successLogout: true})
     }
 
     render() {

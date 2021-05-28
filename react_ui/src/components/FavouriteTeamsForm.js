@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 class FavouriteTeamsForm extends Component {
     constructor() {
@@ -10,7 +11,7 @@ class FavouriteTeamsForm extends Component {
 
     componentDidMount() {
         let temp = Object.assign([], this.props.favouriteTeams)
-        if(this.props.favouriteTeams !== undefined){
+        if (this.props.favouriteTeams !== undefined) {
             this.setState({
                 favouriteTeams: temp
             })
@@ -33,7 +34,6 @@ class FavouriteTeamsForm extends Component {
         }
         this.props.callbackFunctions.updateFavouriteTeams(this.state.favouriteTeams)
     }
-
 
     render() {
         let optionsTeams = (this.props.teams.map(team => {
@@ -60,5 +60,11 @@ class FavouriteTeamsForm extends Component {
     }
 
 }
+
+FavouriteTeamsForm.propTypes = {
+    teams: PropTypes.arrayOf(PropTypes.object),
+    favouriteTeams: PropTypes.arrayOf(PropTypes.number),
+    callbackFunctions: PropTypes.object
+};
 
 export default FavouriteTeamsForm;

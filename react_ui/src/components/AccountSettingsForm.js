@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 class AccountSettingsForm extends Component {
     constructor() {
@@ -26,7 +27,7 @@ class AccountSettingsForm extends Component {
     }
 
     componentDidMount() {
-        if(this.props.user !== undefined){
+        if (this.props.user !== undefined) {
             this.setState({
                 username: this.props.user.username
             })
@@ -36,7 +37,6 @@ class AccountSettingsForm extends Component {
         }
     }
 
-
     render() {
         return (
             <div>
@@ -44,17 +44,24 @@ class AccountSettingsForm extends Component {
                 <div className="row p-3 mt-1 justify-content-lg-left">
                     <label className="col-3" style={{fontSize: "1.5vw"}}>Username</label>{" "}
                     <label className="col-2"> </label>
-                    <input className="col-6" style={{fontSize: "1.5vw"}} type="text" onChange={this.onChangeName}  value={this.state.username}/>
+                    <input className="col-6" style={{fontSize: "1.5vw"}} type="text" onChange={this.onChangeName}
+                           value={this.state.username}/>
                 </div>
                 <div className="row p-3 justify-content-lg-left">
                     <label className="col-3" style={{fontSize: "1.5vw"}}>Password</label>{" "}
                     <label className="col-2"> </label>
-                    <input className="col-6" style={{fontSize: "1.5vw"}} type="password" onChange={this.onChangePassword} value={this.state.password}/>
+                    <input className="col-6" style={{fontSize: "1.5vw"}} type="password"
+                           onChange={this.onChangePassword} value={this.state.password}/>
                 </div>
             </div>
         )
     }
 
 }
+
+AccountSettingsForm.propTypes = {
+    user: PropTypes.object,
+    callbackFunctions: PropTypes.object
+};
 
 export default AccountSettingsForm;

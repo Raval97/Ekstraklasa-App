@@ -7,13 +7,14 @@ import {Redirect} from "react-router";
 import RowOfMatch from "../components/RowOfMatch";
 import Button from "react-bootstrap/Button";
 import NewMatchForm from "../components/NewMatchForm";
+import PropTypes from "prop-types";
 
 class AdministrationMatches extends Component {
     constructor(props) {
         super(props);
         this.state = {
             queryTeamName: 0,
-            queryRound: 0,
+            queryRound: 1,
             queryScore: -1,
             matchPanelToCreate: true,
             matchToEdit: {},
@@ -100,7 +101,7 @@ class AdministrationMatches extends Component {
     }
 
     addNewMatch(match) {
-        if(this.sameTeamNames(match)){
+        if (this.sameTeamNames(match)) {
             this.setState({
                 info: {show: true, text: "Teams cannot be the same or empty", success: false}
             })
@@ -133,23 +134,23 @@ class AdministrationMatches extends Component {
         }
     }
 
-    matchesEquals(oldMatch, newMatch){
+    matchesEquals(oldMatch, newMatch) {
         return (oldMatch.date === newMatch.date && oldMatch.round === newMatch.round &&
             oldMatch.place === newMatch.place && oldMatch.homeTeam.id === newMatch.homeTeam &&
             oldMatch.awayTeam.id === newMatch.awayTeam && oldMatch.homeScore === newMatch.homeScore &&
             oldMatch.awayScore === newMatch.awayScore)
     }
 
-    sameTeamNames(match){
-        return ( match.homeTeam === match.awayTeam)
+    sameTeamNames(match) {
+        return (match.homeTeam === match.awayTeam)
     }
 
     editMatch(match, id) {
-        if(this.matchesEquals(this.state.matchToEdit, match)){
+        if (this.matchesEquals(this.state.matchToEdit, match)) {
             this.setState({
                 info: {show: true, text: "Nothing changed", success: false}
             })
-        } else if(this.sameTeamNames(match)){
+        } else if (this.sameTeamNames(match)) {
             this.setState({
                 info: {show: true, text: "Teams cannot be the same or empty", success: false}
             })
@@ -220,7 +221,7 @@ class AdministrationMatches extends Component {
                                awayTeam={FilteredMatch.awayTeam}
                                awayScore={FilteredMatch.awayScore}
                                round={FilteredMatch.round}
-                               adminPermisions={true}
+                               adminPermissions={true}
                                teams={this.props.teams}
                                callbackFunctions={{
                                    deleteMatch: this.deleteMatch.bind(this),
@@ -271,11 +272,11 @@ class AdministrationMatches extends Component {
                                     callbackFunctions={{
                                         onChangeTeamName: this.onChangeTeamName.bind(this),
                                     }}/>
-                        <InputNumberFilter label={'Round'} length={16} start={1}
+                        <InputNumberFilter label={'Round'} length={16} start={1} default={1}
                                            callbackFunctions={{
                                                onChangeValue: this.onChangeRound.bind(this)
                                            }}/>
-                        <InputNumberFilter label={'Goals'} length={15} start={0}
+                        <InputNumberFilter label={'Goals'} length={15} start={0} default={-1}
                                            callbackFunctions={{
                                                onChangeValue: this.onChangeScore.bind(this)
                                            }}/>
@@ -309,5 +310,11 @@ class AdministrationMatches extends Component {
     }
 }
 
+AdministrationMatches.propTypes = {
+    user: PropTypes.object,
+    teams: PropTypes.arrayOf(PropTypes.object),
+    matches: PropTypes.arrayOf(PropTypes.object),
+    callbackFunctions: PropTypes.object
+};
 
 export default AdministrationMatches;

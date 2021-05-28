@@ -8,6 +8,7 @@ import AdministrationMatches from "../containers/AdministrationMatches";
 import AdministrationUsers from "../containers/AdministrationUsers";
 import SignUpPage from "../containers/SignUpPage";
 import UserAccount from "../containers/UserAccount";
+import RowOfTeam from "../components/RowOfTeam";
 
 class AppNavigation extends Component {
 
@@ -23,7 +24,7 @@ class AppNavigation extends Component {
                     teams={this.props.teams}
                     authorizationFunctions={this.props.authorizationFunctions}
                 />}/>
-                <Route path="/ekstraklasa"  render={(props) => (
+                <Route path="/ekstraklasa" render={(props) => (
                     <div className="mx-auto mt-2 p-3" style={{width: "90%", backgroundColor: "#49a1d5"}}>
                         <Menu
                             user={this.props.user}
@@ -56,11 +57,15 @@ class AppNavigation extends Component {
     }
 }
 
-AppNavigation.propTypes = {
+RowOfTeam.propTypes = {
     user: PropTypes.object,
-    failedAuthorization: PropTypes.bool,
+    successRegister: PropTypes.bool,
     successLogout: PropTypes.bool,
-    authorizationFunctions: PropTypes.object
+    teams: PropTypes.arrayOf(PropTypes.object),
+    matches: PropTypes.arrayOf(PropTypes.object),
+    favouriteTeams: PropTypes.arrayOf(PropTypes.number),
+    authorizationFunctions: PropTypes.object,
+    callbackFunctions: PropTypes.object
 };
 
 export default AppNavigation;

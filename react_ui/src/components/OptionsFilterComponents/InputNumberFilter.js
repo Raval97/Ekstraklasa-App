@@ -1,6 +1,22 @@
 import React, {Component} from 'react';
+import PropTypes from "prop-types";
 
 class InputNumberFilter extends Component {
+    constructor() {
+        super();
+        this.state = {
+            default: false
+        };
+    }
+
+    componentDidMount() {
+        this.setState({default: this.props.default})
+    }
+
+    onChangeValue(e) {
+        this.setState({default: e.target.value})
+        this.props.callbackFunctions.onChangeValue(e)
+    }
 
     render() {
         let optionsValues, inputValues, label
@@ -8,21 +24,19 @@ class InputNumberFilter extends Component {
         optionsValues = (
             optionValuesTemp.map(val => {
                 return (
-                    <option key={val} value={val}>
-                        {val}
-                    </option>
+                    <option key={val} value={val}>{val}</option>
                 )
             })
         )
-        if(this.props.label !== true) {
+        if (this.props.label !== true) {
             label = (
                 <label>{this.props.label}</label>
             )
         }
         inputValues = (
-            <div className="input-container" style={{marginTop:"-10px"}}>
+            <div className="input-container" style={{marginTop: "-10px"}}>
                 {label}
-                <select className="form-control" onChange={this.props.callbackFunctions.onChangeValue}>
+                <select className="form-control" onChange={(e) => this.onChangeValue(e)} value={this.state.default}>
                     <option key={-1} value={-1}>No specified</option>
                     {optionsValues}
                 </select>
@@ -38,5 +52,13 @@ class InputNumberFilter extends Component {
         )
     }
 }
+
+InputNumberFilter.propTypes = {
+    label: PropTypes.string,
+    length: PropTypes.number,
+    start: PropTypes.number,
+    default: PropTypes.number,
+    callbackFunctions: PropTypes.object
+};
 
 export default InputNumberFilter;

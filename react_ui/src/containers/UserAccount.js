@@ -5,6 +5,7 @@ import FavouriteTeamsForm from "../components/FavouriteTeamsForm";
 import AccountSettingsForm from "../components/AccountSettingsForm";
 import * as axios from "axios";
 import {encode as base64_encode} from "base-64";
+import PropTypes from "prop-types";
 
 class UserAccount extends Component {
     constructor() {
@@ -106,7 +107,7 @@ class UserAccount extends Component {
             this.setState({validInputData: false})
             if (this.state.username.length > 3 && this.state.password.length > 3) {
                 await this.updateUserCredentialsRequest()
-                if(isChanged && this.state.info.success){
+                if (isChanged && this.state.info.success) {
                     this.setState({
                         info: {show: true, text: "Successful update credentials and Favourite teams", success: true}
                     })
@@ -132,7 +133,8 @@ class UserAccount extends Component {
         if (this.state.info.show) {
             let bgColor = this.state.info.success === true ? "#639925" : "#a1072c"
             info = (
-                <div className="mx-auto p-1 mb-3 text-center w-50" style={{backgroundColor: bgColor, color: "#fff", fontSize: "1.5vw"}}>
+                <div className="mx-auto p-1 mb-3 text-center w-50"
+                     style={{backgroundColor: bgColor, color: "#fff", fontSize: "1.5vw"}}>
                     {this.state.info.text}
                 </div>
             )
@@ -171,5 +173,12 @@ class UserAccount extends Component {
     }
 
 }
+
+UserAccount.propTypes = {
+    user: PropTypes.object,
+    teams: PropTypes.arrayOf(PropTypes.object),
+    favouriteTeams: PropTypes.arrayOf(PropTypes.number),
+    callbackFunctions: PropTypes.object
+};
 
 export default UserAccount;

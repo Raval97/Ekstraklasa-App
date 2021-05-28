@@ -24,7 +24,6 @@ class LeagueTable extends Component {
                 <div className="row justify-content-center">
                     <h1 style={{fontSize: "3vw", color: "#ecf6fa"}}>Ekstraklasa Table</h1>
                 </div>
-
                 <table className="table table-striped table-info" style={{fontSize: "1vw"}}>
                     <thead className="thead-info">
                     <tr>

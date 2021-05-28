@@ -16,7 +16,6 @@ class RowOfUser extends Component {
         })
     }
 
-
     render() {
         let confirmButton = (
             <Button className="btn" variant="Secondary" style={{fontSize: "1.5vw", minWidth: "130px", cursor: "default"}}>Edit</Button>

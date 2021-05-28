@@ -10,7 +10,7 @@ class Results extends Component {
         super(props);
         this.state = {
             queryTeamName: 0,
-            queryRound: 0,
+            queryRound: 1,
             queryScore: -1,
             onlyFavoritesTeams: false
         };
@@ -80,16 +80,16 @@ class Results extends Component {
                 <div className="row mt-3 w-100 mx-auto">
                     <div className="d-flex justify-content-between w-100">
                         <TeamFilter favouriteTeams={this.props.favouriteTeams} teams={this.props.teams}
-                                    noSpecified={true}
-                                    onlyFavoritesTeams={this.state.onlyFavoritesTeams} label={'Team'}
+                                    noSpecified={true} label={'Team'}
+                                    onlyFavoritesTeams={this.state.onlyFavoritesTeams}
                                     callbackFunctions={{
                                         onChangeTeamName: this.onChangeTeamName.bind(this),
                                     }}/>
-                        <InputNumberFilter label={'Round'} length={16} start={1}
+                        <InputNumberFilter label={'Round'} length={16} start={1} default={1}
                                            callbackFunctions={{
                                                onChangeValue: this.onChangeRound.bind(this)
                                            }}/>
-                        <InputNumberFilter label={'Goals'} length={15} start={0}
+                        <InputNumberFilter label={'Goals'} length={15} start={0} default={-1}
                                            callbackFunctions={{
                                                onChangeValue: this.onChangeScore.bind(this)
                                            }}/>
@@ -120,7 +120,9 @@ class Results extends Component {
 }
 
 Results.propTypes = {
-    matches: PropTypes.arrayOf(PropTypes.object)
+    teams: PropTypes.arrayOf(PropTypes.object),
+    matches: PropTypes.arrayOf(PropTypes.object),
+    favouriteTeams: PropTypes.arrayOf(PropTypes.number)
 };
 
 export default Results;

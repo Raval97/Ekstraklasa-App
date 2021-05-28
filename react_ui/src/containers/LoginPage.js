@@ -27,15 +27,15 @@ class LoginPage extends Component {
         })
     }
 
-    async logIn(){
+    async logIn() {
         let resp = await this.props.authorizationFunctions.logIn(this.state.username, this.state.password)
         this.setState({response: resp})
     }
 
     render() {
         let info
-        if (this.state.response.success !== undefined){
-            if(this.state.response.success === true)
+        if (this.state.response.success !== undefined) {
+            if (this.state.response.success === true)
                 return <Redirect to='/ekstraklasa/home'/>;
             else {
                 info = (
@@ -46,7 +46,6 @@ class LoginPage extends Component {
                 )
             }
         }
-
         if (this.props.successLogout)
             info = (
                 <div id="logOut_info" className="p-1 mb-3 text-center"
@@ -61,11 +60,13 @@ class LoginPage extends Component {
                     New Account is successful created, now you can log in.
                 </div>
             )
+
         return (
             <div className="mx-auto w-75 mt-3 p-3" style={{backgroundColor: "#49a1d5"}}>
                 <div className="mx-auto w-50 p-3 mb-10" style={{backgroundColor: "#33aaff"}}>
                     {info}
-                    <h2 className="form-signin-heading text-center"  style={{fontSize: "3.5vw"}}>Please sign in</h2>
+                    <h2 className="form-signin-heading text-center" style={{fontSize: "3.5vw", color: "#fff"}}>Please
+                        sign in</h2>
                     <div className="form-group">
                         <label htmlFor="username" className="sr-only">Username</label>
                         <input type="text" className="form-control" id="username" name="username"
@@ -76,13 +77,14 @@ class LoginPage extends Component {
                         <input type="password" className="form-control" id="password" name="password"
                                required="required" placeholder="Password" onChange={this.onChangePassword}/>
                     </div>
-                    <button id="signIn" className="btn btn-lg btn-primary btn-block" type="submit" style={{fontSize: "2vw"}}
+                    <button id="signIn" className="btn btn-lg btn-primary btn-block" type="submit"
+                            style={{fontSize: "2vw"}}
                             onClick={() => this.logIn()}>Sign in
                     </button>
                 </div>
                 <div className="row mx-auto w-50 mb-10 justify-content-lg-center">
-                        <MenuSignInAndSignUp actualSite={"Sign_In"}
-                                             callbackFunctions={this.props.authorizationFunctions}/>
+                    <MenuSignInAndSignUp actualSite={"Sign_In"}
+                                         callbackFunctions={this.props.authorizationFunctions}/>
                 </div>
             </div>
         )
@@ -90,6 +92,7 @@ class LoginPage extends Component {
 }
 
 LoginPage.propTypes = {
+    successRegister: PropTypes.bool,
     successLogout: PropTypes.bool,
     authorizationFunctions: PropTypes.object
 };

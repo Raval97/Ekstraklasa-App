@@ -6,7 +6,7 @@ class RowOfMatch extends Component {
 
     render() {
         let deleteOptions, editOptions
-        if (this.props.adminPermisions !== undefined && this.props.adminPermisions === true) {
+        if (this.props.adminPermissions !== undefined && this.props.adminPermissions === true) {
             deleteOptions = (
                 <td>
                     <Button variant="info" onClick={() => this.props.callbackFunctions.deleteMatch(this.props.id)}>
@@ -15,7 +15,8 @@ class RowOfMatch extends Component {
                 </td>)
             editOptions = (
                 <td>
-                    <Button variant="info" onClick={() => this.props.callbackFunctions.setMatchPanelToEdit(this.props.id)}>
+                    <Button variant="info"
+                            onClick={() => this.props.callbackFunctions.setMatchPanelToEdit(this.props.id)}>
                         Edit
                     </Button>
                 </td>
@@ -42,10 +43,14 @@ RowOfMatch.propTypes = {
     id: PropTypes.number,
     place: PropTypes.string,
     date: PropTypes.string,
-    homeTeam:PropTypes.object,
+    homeTeam: PropTypes.object,
     homeScore: PropTypes.number,
     awayTeam: PropTypes.object,
     awayScore: PropTypes.number,
+    round: PropTypes.number,
+    adminPermissions: PropTypes.bool,
+    teams: PropTypes.arrayOf(PropTypes.object),
+    callbackFunctions: PropTypes.object
 };
 
 export default RowOfMatch;

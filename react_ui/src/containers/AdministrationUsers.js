@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import RowOfUser from "../components/RowOfUser";
 import {encode as base64_encode} from "base-64";
 import {Redirect} from "react-router";
+import PropTypes from "prop-types";
 
 
 class AdministrationUsers extends Component {
@@ -37,11 +38,10 @@ class AdministrationUsers extends Component {
             )
     }
 
-
     editPermission(id) {
         let headers = new Headers();
         headers.append('Authorization', 'Basic ' + base64_encode(this.props.user.username + ":" + this.props.user.password));
-        fetch("http://localhost:8080/Ekstraklasa/users/"+id, {method: 'PUT', headers: headers,})
+        fetch("http://localhost:8080/Ekstraklasa/users/" + id, {method: 'PUT', headers: headers,})
             .then((result) => {
                 this.readUsers()
                 this.setState({
@@ -57,31 +57,31 @@ class AdministrationUsers extends Component {
 
     render() {
         let info
-        if (this.props.user === null)
+        if (this.props.user === null) {
             return <Redirect to='/login'/>;
+        }
         let users = this.state.users.sort((a, b) => (a.id > b.id))
         let index = users.findIndex((user) => user.username === this.props.user.username)
-        if (index !== -1)
+        if (index !== -1) {
             users.splice(index, 1)
-
+        }
         if (this.state.info.show) {
             let bgColor = this.state.info.success === true ? "#639925" : "#a1072c"
             info = (
-                <div className="mx-auto p-1 mb-3 text-center w-50" style={{backgroundColor: bgColor, color: "#fff", fontSize: "1.5vw"}}>
+                <div className="mx-auto p-1 mb-3 text-center w-50"
+                     style={{backgroundColor: bgColor, color: "#fff", fontSize: "1.5vw"}}>
                     {this.state.info.text}
                 </div>
             )
         }
-
-
         users = users.map(user => {
             return <RowOfUser key={user.id}
-                                    id={user.id}
-                                    nazwa={user.username}
-                                    role={user.role}
-                                    callbackFunctions={{
-                                        editPermission: this.editPermission.bind(this)
-                                    }}/>
+                              id={user.id}
+                              nazwa={user.username}
+                              role={user.role}
+                              callbackFunctions={{
+                                  editPermission: this.editPermission.bind(this)
+                              }}/>
         })
 
         return (
@@ -105,5 +105,9 @@ class AdministrationUsers extends Component {
         )
     }
 }
+
+AdministrationUsers.propTypes = {
+    user: PropTypes.object
+};
 
 export default AdministrationUsers;

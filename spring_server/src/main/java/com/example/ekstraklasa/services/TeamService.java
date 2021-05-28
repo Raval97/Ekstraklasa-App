@@ -66,24 +66,6 @@ public class TeamService {
         return Optional.empty();
     }
 
-//    public Map<String, Object> get(long id) {
-//        Optional<Team> team = repo.findById(id);
-//        Map<String, Object> result = new HashMap<>();
-//        try {
-//            if (team.isPresent()) {
-//                result.put("team", team.get());
-//                result.put("Status", 200);
-//            } else {
-//                result.put("Error", "Wrong index of team");
-//                result.put("Status", 400);
-//            }
-//        } catch (Exception ex) {
-//            result.put("Error", ex.getMessage());
-//            result.put("Status", 500);
-//        }
-//        return result;
-//    }
-
     public Optional<Team> getTeamFromPostRequest(String object, String typeOfTeam) {
         ObjectMapper mapper = new ObjectMapper();
         try {

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Button from 'react-bootstrap/Button';
+import PropTypes from "prop-types";
 
 class AdminNowyMecz extends Component {
     constructor(props) {
@@ -85,26 +86,12 @@ class AdminNowyMecz extends Component {
         }
     }
 
-    getOptionTeams(id) {
-        let optionsTeams = (
-            this.props.teams
-                .map(team => {
-                    let selected = (team.id === id) ? "selected" : ""
-                    return (
-                        <option key={team.id} value={team.id} selected={selected}>
-                            {team.name}
-                        </option>
-                    )
-                })
-        )
-        return optionsTeams
-    }
-
     render() {
-        let confirmButton, inputTeams1, inputTeams2
+        let confirmButton, optionsTeams, inputTeams1, inputTeams2
         if (this.props.panelForm === "Create") {
             confirmButton = (
-                <Button variant="success" style={{fontSize: "2vw"}} onClick={() => this.props.callbackFunctions.addNewMatch(this.state)}>
+                <Button variant="success" style={{fontSize: "2vw"}}
+                        onClick={() => this.props.callbackFunctions.addNewMatch(this.state)}>
                     Create
                 </Button>
             )
@@ -116,16 +103,23 @@ class AdminNowyMecz extends Component {
                 </Button>
             )
         }
+        optionsTeams = this.props.teams.map(team => {
+            return (
+                <option key={team.id} value={team.id}>
+                    {team.name}
+                </option>
+            )
+        })
         inputTeams1 = (
-            <select className="form-control" onChange={this.onChangeIdHome}>
+            <select className="form-control" onChange={this.onChangeIdHome} value={this.state.homeTeam}>
                 <option key={0} value={0}>Home Team</option>
-                {this.getOptionTeams(this.state.homeTeam)}
+                {optionsTeams}
             </select>
         )
         inputTeams2 = (
-            <select className="form-control" onChange={this.onChangeIdAway}>
+            <select className="form-control" onChange={this.onChangeIdAway} value={this.state.awayTeam}>
                 <option key={0} value={0}>Away Team</option>
-                {this.getOptionTeams(this.state.awayTeam)}
+                {optionsTeams}
             </select>
         )
 
@@ -180,5 +174,11 @@ class AdminNowyMecz extends Component {
         )
     }
 }
+
+AdminNowyMecz.propTypes = {
+    panelForm: PropTypes.string,
+    teams: PropTypes.arrayOf(PropTypes.object),
+    callbackFunctions: PropTypes.object
+};
 
 export default AdminNowyMecz;

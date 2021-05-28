@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import FavouriteTeamsForm from "../components/FavouriteTeamsForm";
 import AccountSettingsForm from "../components/AccountSettingsForm";
 import MenuSignInAndSignUp from "../components/MenuSignInAndSignUp";
+import PropTypes from "prop-types";
 
 class SignUpPage extends Component {
     constructor() {
@@ -15,10 +16,10 @@ class SignUpPage extends Component {
             validInputData: false,
             response: {}
         };
-       this.onChangeValidInputData = this.onChangeValidInputData.bind(this);
+        this.onChangeValidInputData = this.onChangeValidInputData.bind(this);
     }
 
-   onChangeValidInputData() {
+    onChangeValidInputData() {
         this.setState({
             validInputData: !this.validInputData
         })
@@ -42,13 +43,12 @@ class SignUpPage extends Component {
         })
     }
 
-    async register(){
+    async register() {
         this.setState({validInputData: false})
-        if(this.state.username.length > 3 && this.state.password.length > 3){
+        if (this.state.username.length > 3 && this.state.password.length > 3) {
             let resp = await this.props.authorizationFunctions.addNewUser(this.state)
             this.setState({response: resp})
-        }
-        else
+        } else
             this.onChangeValidInputData()
     }
 
@@ -87,8 +87,9 @@ class SignUpPage extends Component {
                         </div>
                         <div className="w-75">
                             <FavouriteTeamsForm teams={this.props.teams}
-                                                callbackFunctions={{updateFavouriteTeams: this.updateFavouriteTeams.bind(this)}}
-
+                                                callbackFunctions={
+                                                    {updateFavouriteTeams: this.updateFavouriteTeams.bind(this)}
+                                                }
                             />
                         </div>
                     </div>
@@ -101,7 +102,10 @@ class SignUpPage extends Component {
             </div>
         )
     }
-
 }
 
+SignUpPage.propTypes = {
+    teams: PropTypes.arrayOf(PropTypes.object),
+    authorizationFunctions: PropTypes.object
+};
 export default SignUpPage;

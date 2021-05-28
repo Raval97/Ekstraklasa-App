@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect} from 'react-router'
 import Button from 'react-bootstrap/Button';
+import PropTypes from "prop-types";
 
 class Menu extends Component {
     constructor() {
@@ -57,29 +58,34 @@ class Menu extends Component {
         })
     }
 
+    componentWillReceiveProps(nextProps, a) {
+        this.setState({
+            loginPage: false,
+            registerPage: false,
+            adminMatchesPage: false,
+            adminUsersPage: false,
+            ekstraklasaPage: false,
+            userAccountPage: false
+        })
+    }
+
     render() {
         if (this.state.loginPage) {
-            this.onChangeLoginPage()
             return <Redirect to='/login'/>
         }
         if (this.state.registerPage) {
-            this.onChangeRegisterPage()
             return <Redirect to='/sign_up'/>
         }
         if (this.state.adminMatchesPage) {
-            this.onChangeAdminMatchesPage()
             return <Redirect to='/ekstraklasa/adminMatches'/>
         }
         if (this.state.adminUsersPage) {
-            this.onChangeAdminUsersPage()
             return <Redirect to='/ekstraklasa/adminUsers'/>
         }
         if (this.state.ekstraklasaPage) {
-            this.onChangeEkstraklasaPage()
             return <Redirect to='/ekstraklasa/home'/>
         }
         if (this.state.userAccountPage) {
-            this.onChangeUserAccountPage()
             return <Redirect to='/ekstraklasa/userAccount'/>
         }
 
@@ -87,8 +93,8 @@ class Menu extends Component {
             <div>
                 <div className="form-group row">
                     <div className="pl-3">
-                        <Button type="submit" className="myButton"
-                                onClick={() => this.props.authorizationFunctions.logOut()}>Log Out
+                        <Button type="submit" className="myButton" onClick={() => this.props.authorizationFunctions.logOut()}>
+                            Log Out
                         </Button>
                     </div>
                 </div>
@@ -117,10 +123,8 @@ class Menu extends Component {
                     {logoutButton}
                     <Button className="myButton" onClick={this.onChangeEkstraklasaPage}>Ekstraklasa</Button>{' '}
                     <Button className="myButton" onClick={this.onChangeUserAccountPage}>User Account</Button>{' '}
-                    <Button className="myButton" onClick={this.onChangeAdminMatchesPage}>Administration
-                        Matches</Button>{' '}
-                    <Button className="myButton" onClick={this.onChangeAdminUsersPage}>Administration
-                        Users</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeAdminMatchesPage}>Administration Matches</Button>{' '}
+                    <Button className="myButton" onClick={this.onChangeAdminUsersPage}>Administration Users</Button>{' '}
                 </div>
             )
         }
@@ -132,12 +136,17 @@ class Menu extends Component {
                 </div>
                 <div className="w-25">
                     <img className="pl-5 float-right" src={process.env.PUBLIC_URL + '/logo.png'}
-                         alt="Ekstraklasa" width="400" height="100"/>
+                         alt="Ekstraklasa" width="100%" height="80%"/>
                 </div>
             </div>
         )
     }
 
 }
+
+Menu.propTypes = {
+    user: PropTypes.object,
+    authorizationFunctions: PropTypes.object,
+};
 
 export default Menu;
