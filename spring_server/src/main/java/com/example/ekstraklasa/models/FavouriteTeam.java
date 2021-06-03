@@ -27,6 +27,12 @@ public class FavouriteTeam {
         this.users = users;
     }
 
+    public FavouriteTeam(Long id, Team team, Users users) {
+        this.id = id;
+        this.team = team;
+        this.users = users;
+    }
+
     public FavouriteTeam() {}
 
     @Override

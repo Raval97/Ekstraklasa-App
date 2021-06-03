@@ -68,7 +68,7 @@ public class MatchService {
             Match newMatch = new Match(homeTeam.get(), awayTeam.get(), homeScore, awayScore, round, place, date);
             return Optional.of(newMatch);
         } catch (Exception ex) {
-            System.out.println("ex");
+            System.out.println(ex);
         }
         return Optional.empty();
     }

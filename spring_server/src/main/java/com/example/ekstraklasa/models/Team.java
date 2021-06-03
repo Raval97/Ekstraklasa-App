@@ -1,6 +1,7 @@
 package com.example.ekstraklasa.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,17 +29,31 @@ public class Team {
     private int loses;
     private int wins;
     private int draws;
-    @JsonBackReference
+    @JsonBackReference(value = "homeMatches")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @OneToMany(mappedBy = "homeTeam", cascade = CascadeType.ALL)
     private Set<Match> homeMatches = new HashSet<>();
-    @JsonBackReference
+    @JsonBackReference(value = "awayMatches")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @OneToMany(mappedBy = "awayTeam", cascade = CascadeType.ALL)
     private Set<Match> awayMatches = new HashSet<>();
-    @JsonBackReference
+    @JsonBackReference(value = "favouriteTeams")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<FavouriteTeam> favouriteTeams = new HashSet<>();
 
     public Team(String name, int points, int goalsScores, int goalsLoses, int loses, int wins, int draws) {
+        this.name = name;
+        this.points = points;
+        this.goalsScores = goalsScores;
+        this.goalsLoses = goalsLoses;
+        this.loses = loses;
+        this.wins = wins;
+        this.draws = draws;
+    }
+
+    public Team(Long id, String name, int points, int goalsScores, int goalsLoses, int loses, int wins, int draws) {
+        this.id = id;
         this.name = name;
         this.points = points;
         this.goalsScores = goalsScores;

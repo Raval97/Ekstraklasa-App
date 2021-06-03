@@ -28,15 +28,12 @@ public class Users implements UserDetails {
     private String username;
     private String password;
     private Role role;
-//    @JsonDeserialize(using = FavouriteTeamDeserializer.class)
     @JsonBackReference
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<FavouriteTeam> favouriteTeams = new HashSet<>();
 
     public Users(String username, String password) {
-        this.username = username;
-        this.password =  passwordEncoder().encode(password);
-        this.role = Role.USER;
+        this(username, password, Role.USER);
     }
 
     public Users(String username, String password, Role role) {
@@ -45,7 +42,15 @@ public class Users implements UserDetails {
         this.role = role;
     }
 
+    public Users(Long id, String username, String password, Role role) {
+        this.id = id;
+        this.username = username;
+        this.password = passwordEncoder().encode(password);
+        this.role = role;
+    }
+
     public Users() {
+        super();
     }
 
     public void setPassword(String password) {
@@ -118,4 +123,5 @@ public class Users implements UserDetails {
     public int hashCode() {
         return Objects.hash(getId(), getUsername(), getPassword(), getRole());
     }
+
 }

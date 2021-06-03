@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,7 +51,7 @@ public class DashboardUserController {
     }
 
     @RequestMapping(value = "/update_account", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> registerNewUser(@RequestBody String object) {
+    public ResponseEntity<?> updateAccount(@RequestBody String object) {
         Users user = userService.findUserByUsername(Users.getUserName());
         Map<String, Object> response = userService.update(user, object);
         HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
