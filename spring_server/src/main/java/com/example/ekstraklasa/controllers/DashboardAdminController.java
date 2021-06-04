@@ -31,14 +31,15 @@ public class DashboardAdminController {
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUsers() {
         Map<String,Object> response = userService.listAll();
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changeUserPermission(@PathVariable int id) {
         Map<String,Object> response = userService.editUserPermission(id);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK :
+                response.get("status").equals(404) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
@@ -46,12 +47,12 @@ public class DashboardAdminController {
     public ResponseEntity<?> deleteMatch(@PathVariable int id) {
         Optional<Match> match = matchService.getMatch(id);
         Map<String, Object> response = matchService.delete(match);
-        if(((int)response.get("Status")) == 200) {
+        if(((int)response.get("status")) == 200) {
             teamService.updateStatisticsOfTeam(match.get().getHomeTeam());
             teamService.updateStatisticsOfTeam(match.get().getAwayTeam());
         }
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK :
+                response.get("status").equals(404) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
@@ -69,8 +70,8 @@ public class DashboardAdminController {
                     .filter(Team.distinctByKey(Team::getName))
                     .forEach(teamService::updateStatisticsOfTeam);
         }
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK :
+                response.get("status").equals(404) ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);
     }
 
@@ -84,8 +85,7 @@ public class DashboardAdminController {
             teamService.updateStatisticsOfTeam(homeTeam.get());
             teamService.updateStatisticsOfTeam(awayTeam.get());
         }
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);
     }
 

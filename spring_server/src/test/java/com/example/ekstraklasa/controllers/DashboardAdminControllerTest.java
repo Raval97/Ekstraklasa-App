@@ -142,10 +142,10 @@ class DashboardAdminControllerTest {
     @Test
     void shouldNotDeleteMatch() throws Exception {
         MvcResult mvcResult = mockMvc.perform(delete("/dashboard/matches/999"))
-                .andExpect(status().is(400))
+                .andExpect(status().is(404))
                 .andReturn();
         JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
-        String response = objectMapper.convertValue(jsonNode.get("Error"), String.class);
+        String response = objectMapper.convertValue(jsonNode.get("error"), String.class);
 
         MatcherAssert.assertThat(response, Matchers.equalTo("Wrong index of match"));
     }

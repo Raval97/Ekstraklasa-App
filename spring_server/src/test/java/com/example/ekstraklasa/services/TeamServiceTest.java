@@ -28,19 +28,19 @@ class TeamServiceTest {
         ExampleDataToTest dateTests = new ExampleDataToTest();
         Team homeTeam = dateTests.getTeams().get(0);
         Team awayTeam = dateTests.getTeams().get(1);
-        int homeTeamPointsBeforeRequest = homeTeam.getPoints();
-        int homeTeamWinsRequest = homeTeam.getWins();
-        int awayTeamLosesGoalsBeforeRequest = awayTeam.getGoalsLoses();
-        int awayTeamLosesBeforeRequest = awayTeam.getLoses();
+        int homeTeamPointsBeforeChange = homeTeam.getPoints();
+        int homeTeamWinsRequestBeforeChange = homeTeam.getWins();
+        int awayTeamLosesGoalsBeforeChange = awayTeam.getGoalsLoses();
+        int awayTeamLosesBeforeChange = awayTeam.getLoses();
         dateTests.getMatches().add(
                 new Match(homeTeam, awayTeam, 2, 0, 3, "Kraków", LocalDate.now())
         );
         teamService.updateStatisticsOfTeam(homeTeam);
         teamService.updateStatisticsOfTeam(awayTeam);
 
-        MatcherAssert.assertThat(homeTeam.getPoints(), Matchers.equalTo(homeTeamPointsBeforeRequest + 3));
-        MatcherAssert.assertThat(homeTeam.getWins(), Matchers.equalTo(homeTeamWinsRequest + 1));
-        MatcherAssert.assertThat(awayTeam.getGoalsLoses(), Matchers.equalTo(awayTeamLosesGoalsBeforeRequest + 2));
-        MatcherAssert.assertThat(awayTeam.getLoses(), Matchers.equalTo(awayTeamLosesBeforeRequest + 1));
+        MatcherAssert.assertThat(homeTeam.getPoints(), Matchers.equalTo(homeTeamPointsBeforeChange + 3));
+        MatcherAssert.assertThat(homeTeam.getWins(), Matchers.equalTo(homeTeamWinsRequestBeforeChange + 1));
+        MatcherAssert.assertThat(awayTeam.getGoalsLoses(), Matchers.equalTo(awayTeamLosesGoalsBeforeChange + 2));
+        MatcherAssert.assertThat(awayTeam.getLoses(), Matchers.equalTo(awayTeamLosesBeforeChange + 1));
     }
 }

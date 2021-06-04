@@ -33,10 +33,10 @@ public class FavouriteTeamService {
                 names.add(ft.getTeam().getName());
             });
             result.put("favouriteTeam", names);
-            result.put("Status", 200);
+            result.put("status", 200);
         } else{
             result.put("error", "Wrong data format");
-            result.put("Status", 500);
+            result.put("status", 400);
         }
         return result;
     }

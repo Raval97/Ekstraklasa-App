@@ -27,35 +27,35 @@ public class UserService implements UserDetailsService {
     }
 
     public Map<String, Object> listAll() {
-        List<Users> users = repo.findAll();
         Map<String, Object> result = new HashMap<String, Object>();
         try {
+            List<Users> users = repo.findAll();
             result.put("users", users);
-            result.put("Status", 200);
+            result.put("status", 200);
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }
 
     public Map<String, Object> editUserPermission(long id) {
-        Optional<Users> user = repo.findById(id);
         Map<String, Object> result = new HashMap<>();
         try {
+            Optional<Users> user = repo.findById(id);
             if (user.isPresent()) {
                 user.get().setRole(user.get().getRole().equals(Role.USER) ? Role.ADMIN : Role.USER);
                 repo.save(user.get());
                 result.put("user_role", user.get().getRole());
-                result.put("Status", 200);
+                result.put("status", 200);
 
             } else {
-                result.put("Error", "Wrong index of match");
-                result.put("Status", 400);
+                result.put("error", "Wrong id of user");
+                result.put("status", 404);
             }
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }
@@ -104,15 +104,15 @@ public class UserService implements UserDetailsService {
                 user.setPassword(password);
                 repo.save(user);
                 response.put("user", user);
-                response.put("Status", 200);
+                response.put("status", 200);
             }
             else {
                 response.put("error", "Username is not unique");
-                response.put("Status", 400);
+                response.put("status", 409);
             }
         } catch (Exception ex) {
             response.put("error", "Wrong data format");
-            response.put("Status", 500);
+            response.put("status", 400);
         }
         return response;
     }

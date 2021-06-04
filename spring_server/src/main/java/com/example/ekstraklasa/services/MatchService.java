@@ -22,14 +22,14 @@ public class MatchService {
     }
 
     public Map<String, Object> listAll() {
-        List<Match> matches = repo.findAll();
         Map<String, Object> result = new HashMap<String, Object>();
         try {
+            List<Match> matches = repo.findAll();
             result.put("matches", matches);
-            result.put("Status", 200);
+            result.put("status", 200);
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }
@@ -39,19 +39,19 @@ public class MatchService {
     }
 
     public Map<String, Object> get(long id) {
-        Optional<Match> match = repo.findById(id);
         Map<String, Object> result = new HashMap<>();
         try {
+            Optional<Match> match = repo.findById(id);
             if (match.isPresent()) {
                 result.put("match", match.get());
-                result.put("Status", 200);
+                result.put("status", 200);
             } else {
-                result.put("Error", "Wrong index of match");
-                result.put("Status", 400);
+                result.put("error", "Wrong index of match");
+                result.put("status", 404);
             }
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }
@@ -78,10 +78,10 @@ public class MatchService {
         if (newMatch.isPresent()) {
             repo.save(newMatch.get());
             result.put("match", newMatch);
-            result.put("Status", 200);
+            result.put("status", 200);
         } else {
             result.put("error", "Wrong data format");
-            result.put("Status", 500);
+            result.put("status", 400);
         }
         return result;
     }
@@ -106,14 +106,14 @@ public class MatchService {
                 oldMatch.get().setAwayTeam(awayTeam.get());
                 repo.save(oldMatch.get());
                 result.put("match", oldMatch.get());
-                result.put("Status", 200);
+                result.put("status", 200);
             } else {
-                result.put("Error", "Wrong index of match");
-                result.put("Status", 400);
+                result.put("error", "Wrong index of match");
+                result.put("status", 404);
             }
         } catch (Exception ex) {
             result.put("error", "Wrong data format");
-            result.put("Status", 500);
+            result.put("status", 400);
         }
         return result;
     }
@@ -124,14 +124,14 @@ public class MatchService {
             if (match.isPresent()) {
                 repo.deleteById(match.get().getId());
                 result.put("match", match.get());
-                result.put("Status", 200);
+                result.put("status", 200);
             } else {
-                result.put("Error", "Wrong index of match");
-                result.put("Status", 400);
+                result.put("error", "Wrong index of match");
+                result.put("status", 404);
             }
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }

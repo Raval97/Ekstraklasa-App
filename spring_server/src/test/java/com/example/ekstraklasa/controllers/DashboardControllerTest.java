@@ -37,14 +37,9 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@AutoConfigureMockMvc
-//@SpringBootTest()
 @ExtendWith(MockitoExtension.class)
-//@WithMockUser(username = "user")
-//@WebMvcTest(DashboardController.class)
 class DashboardControllerTest {
 
     @Mock
@@ -115,7 +110,7 @@ class DashboardControllerTest {
         requestBody.put("favouriteTeams", new JSONArray(Arrays.asList(1, 2)));
         MvcResult mvcResult = mockMvc.perform(post("/signup")
                 .content(requestBody.toString()))
-                .andExpect(status().is(400))
+                .andExpect(status().is(409))
                 .andReturn();
         JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
         String errorMessage = objectMapper.convertValue(jsonNode.get("error"), String.class);

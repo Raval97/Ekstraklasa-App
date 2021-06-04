@@ -78,7 +78,7 @@ class DashboardUserControllerTest {
         MvcResult mvcResult = mockMvc.perform(put("/update_account")
                 .content(requestBody.toString()))
                 .andDo(print())
-                .andExpect(status().is(500))
+                .andExpect(status().is(400))
                 .andReturn();
         JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
         String response = objectMapper.convertValue(jsonNode.get("error"), String.class);

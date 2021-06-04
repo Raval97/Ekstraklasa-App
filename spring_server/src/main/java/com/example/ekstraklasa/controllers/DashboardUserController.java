@@ -35,7 +35,7 @@ public class DashboardUserController {
     public ResponseEntity<?> getUsersFavouriteTeams() {
         Users user = userService.findUserByUsername(Users.getUserName());
         Map<String,Object> response = teamService.getAllFavouriteByUserId(user.getId());
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
@@ -46,7 +46,7 @@ public class DashboardUserController {
         if(teams.isPresent())
             favouriteTeamService.deleteAllByUserId(user.getId());
         Map<String,Object> response = favouriteTeamService.saveAllByUserId(teams, user);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(response, status);
     }
 
@@ -54,8 +54,8 @@ public class DashboardUserController {
     public ResponseEntity<?> updateAccount(@RequestBody String object) {
         Users user = userService.findUserByUsername(Users.getUserName());
         Map<String, Object> response = userService.update(user, object);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK :
+                response.get("status").equals(409) ? HttpStatus.CONFLICT : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);
     }
 

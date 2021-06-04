@@ -48,18 +48,18 @@ public class DashboardController {
                 favouriteTeams.get().forEach(ft -> favouriteTeamService.save(new FavouriteTeam(ft, newUser.get())));
                 response.put("user", newUser.get());
                 response.put("favouriteTeams", favouriteTeams.get());
-                response.put("Status", 200);
+                response.put("status", 200);
                 status = HttpStatus.OK;
             }
             else {
                 response.put("error", "Username is not unique");
-                response.put("Status", 400);
-                status = HttpStatus.BAD_REQUEST;
+                response.put("status", 409);
+                status = HttpStatus.CONFLICT;
             }
         } else {
             response.put("error", "Wrong data format");
-            response.put("Status", 500);
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            response.put("status", 400);
+            status = HttpStatus.BAD_REQUEST;
         }
         return new ResponseEntity<>(response, status);
     }
@@ -67,22 +67,22 @@ public class DashboardController {
     @RequestMapping(value = "/dashboard/teams", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getTeams() {
         Map<String,Object> response = teamService.listAll();
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
     @RequestMapping(value = "/dashboard/matches", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMatches() {
         Map<String,Object> response = matchService.listAll();
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 
     @RequestMapping(value = "/dashboard/matches/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMatch(@PathVariable int id) {
         Map<String,Object> response = matchService.get(id);
-        HttpStatus status = response.get("Status").equals(200) ? HttpStatus.OK :
-                response.get("Status").equals(400) ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = response.get("status").equals(200) ? HttpStatus.OK :
+                response.get("status").equals(404) ? HttpStatus.CONFLICT : HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(response, status);
     }
 

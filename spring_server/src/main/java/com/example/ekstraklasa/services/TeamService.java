@@ -21,29 +21,29 @@ public class TeamService {
     }
 
     public Map<String, Object> listAll() {
-        List<Team> teams = repo.findAll();
         Map<String, Object> result = new HashMap<String, Object>();
         try {
+            List<Team> teams = repo.findAll();
             result.put("teams", teams);
-            result.put("Status", 200);
+            result.put("status", 200);
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }
 
     public Map<String, Object> getAllFavouriteByUserId(Long id) {
-        List<Team> teams = repo.findFavouriteTeamByUserId(id);
         List<Long> teamsIds = new ArrayList<>();
-        teams.forEach(team -> teamsIds.add(team.getId()));
         Map<String, Object> result = new HashMap<>();
         try {
+            List<Team> teams = repo.findFavouriteTeamByUserId(id);
+            teams.forEach(team -> teamsIds.add(team.getId()));
             result.put("teams", teamsIds);
-            result.put("Status", 200);
+            result.put("status", 200);
         } catch (Exception ex) {
-            result.put("Error", ex.getMessage());
-            result.put("Status", 500);
+            result.put("error", ex.getMessage());
+            result.put("status", 500);
         }
         return result;
     }
