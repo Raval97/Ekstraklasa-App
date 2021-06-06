@@ -1,0 +1,36 @@
+version: '3'
+services:
+  database:
+    container_name: 'ekstraklasa_database'
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=Ekstraklasa
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
+    command: -p 5433
+    restart: always
+
+  server:
+    image: ekstraklasa_server
+    container_name: 'ekstraklasa_server'
+    build: ./spring_server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+
+  UI:
+    build: ./react_ui
+    volumes:
+      - ./react_ui:/core
+    ports:
+      - 3000:3000
+    image: ekstraklasa_ui
+    container_name: ekstraklasa_ui
+    command: npm start
+    depends_on:
+      - server
