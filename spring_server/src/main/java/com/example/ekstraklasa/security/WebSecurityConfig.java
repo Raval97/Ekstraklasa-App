@@ -33,14 +33,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/dashboard/**").permitAll()
-                .antMatchers("/favourite_team/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/signup/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/update_account/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/dashboard/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/dashboard/**").hasRole("ADMIN")
                 .antMatchers("/users/**").hasRole("ADMIN")
+                .antMatchers("/favourite_team/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/update_account/**").hasAnyRole("USER", "ADMIN")
                 .and().formLogin().permitAll()
                 .successHandler(authSuccessHandler()).failureHandler(authFailureHandler())
                 .and().logout().permitAll().logoutSuccessUrl("/dashboard/teams")

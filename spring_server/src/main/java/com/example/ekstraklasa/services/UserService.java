@@ -68,11 +68,6 @@ public class UserService implements UserDetailsService {
         return repo.findByUsername(s);
     }
 
-    public Boolean isUsernameUnique(String username) {
-        Optional<Users> user = Optional.ofNullable(repo.findByUsername(username));
-        return user.isEmpty();
-    }
-
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return repo.findByUsername(s);
@@ -99,22 +94,33 @@ public class UserService implements UserDetailsService {
             JsonNode jsonNode = mapper.readTree(object);
             String username = mapper.convertValue(jsonNode.get("username"), String.class);
             String password = mapper.convertValue(jsonNode.get("password"), String.class);
-            if(isUsernameUnique(username)) {
-                user.setUsername(username);
-                user.setPassword(password);
-                repo.save(user);
-                response.put("user", user);
-                response.put("status", 200);
+            if (isUsernameChange(user, username) && !isUsernameUnique(username)) {
+                throw new Exception("Username is not unique");
             }
-            else {
-                response.put("error", "Username is not unique");
-                response.put("status", 409);
-            }
+            user.setUsername(username);
+            user.setPassword(password);
+            repo.save(user);
+            response.put("user", user);
+            response.put("status", 200);
         } catch (Exception ex) {
-            response.put("error", "Wrong data format");
-            response.put("status", 400);
+            if (ex.getMessage().equals("Username is not unique")) {
+                response.put("error", ex.getMessage());
+                response.put("status", 409);
+            } else {
+                response.put("error", "Wrong data format");
+                response.put("status", 400);
+            }
         }
         return response;
+    }
+
+    public Boolean isUsernameUnique(String username) {
+        Optional<Users> user = Optional.ofNullable(repo.findByUsername(username));
+        return user.isEmpty();
+    }
+
+    private boolean isUsernameChange(Users user, String newUsername) {
+        return !user.getUsername().equals(newUsername);
     }
 
 }

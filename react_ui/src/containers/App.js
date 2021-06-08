@@ -7,7 +7,7 @@ class App extends Component {
     constructor() {
         super();
         this.state = {
-            user: null,
+            user: {},
             successLogout: false,
             successRegister: false,
             teams: [],
@@ -40,7 +40,6 @@ class App extends Component {
             )
         return 0
     }
-
     readMatches() {
         fetch("http://localhost:8080/Ekstraklasa/dashboard/matches", {method: 'GET'})
             .then(res => res.json())
@@ -106,6 +105,7 @@ class App extends Component {
     logOut() {
         this.setState({user: null})
         this.setState({successLogout: true})
+        this.setState({favouriteTeams: []})
     }
 
     async addNewUser(object) {
