@@ -1,6 +1,5 @@
 # Ekstraklasa Web App
-    information system for top-class football games in Poland - Ekstraklasa. 
-    Provision of administrative capacity within the match and user database
+    The information system for top-class football games in Poland - Ekstraklasa.
 
 ## Launch Project
     Clone the repository and run commend from main project directory:
