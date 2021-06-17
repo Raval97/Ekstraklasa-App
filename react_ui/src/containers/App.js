@@ -7,7 +7,7 @@ class App extends Component {
     constructor() {
         super();
         this.state = {
-            user: {},
+            user: null,
             successLogout: false,
             successRegister: false,
             teams: [],

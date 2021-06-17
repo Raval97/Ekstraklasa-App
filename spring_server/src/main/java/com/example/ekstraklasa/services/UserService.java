@@ -103,7 +103,7 @@ public class UserService implements UserDetailsService {
             response.put("user", user);
             response.put("status", 200);
         } catch (Exception ex) {
-            if (ex.getMessage().equals("Username is not unique")) {
+            if (ex.getMessage() != null && ex.getMessage().equals("Username is not unique")) {
                 response.put("error", ex.getMessage());
                 response.put("status", 409);
             } else {
