@@ -162,4 +162,5 @@ class DashboardControllerTest {
         MatcherAssert.assertThat(match.getHomeTeam().getName(), Matchers.equalTo("Cracovia Kraków"));
         MatcherAssert.assertThat(match.getAwayTeam().getName(), Matchers.equalTo("Górnik Zabrze"));
     }
+
 }
